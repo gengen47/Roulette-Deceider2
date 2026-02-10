@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Roulette Decider - 運命のゴハン、回して決めよう！</title>
+    <title>メシガチャ - 運命のゴハン、回して決めよう！</title>
     <meta name="description" content="何食べる？で揉めたらルーレットで即決！周辺の飲食店とカスタム選択肢をまぜて運命の一食を決めよう。" />
 
     <!-- ===== LinkSwitch プレースホルダー（バリューコマース収益化用） ===== -->
@@ -297,7 +297,7 @@
     <header class="bg-accent text-white px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
         <div class="flex items-center gap-2">
             <span class="text-2xl">🎰</span>
-            <h1 class="text-lg font-extrabold tracking-tight">Roulette Decider</h1>
+            <h1 class="text-lg font-extrabold tracking-tight">メシガチャ</h1>
         </div>
         <span class="chip">MVP</span>
     </header>
@@ -564,13 +564,15 @@
 
             const rangeVal = document.getElementById('distance-range').value;
 
-            try {
-                let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal);
+            const openNowChecked = document.getElementById('filter-open-now').checked;
 
-                // 営業中フィルター
-                if (document.getElementById('filter-open-now').checked) {
+            try {
+                let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal, openNowChecked);
+
+                // 営業中フィルター（クライアント側テキスト解析）
+                if (openNowChecked) {
                     const filtered = shops.filter(s => isOpenNow(s));
-                    shops = filtered.length > 0 ? filtered : shops;
+                    shops = filtered;
                 }
 
                 // 既存の店舗選択肢をクリア
@@ -608,7 +610,7 @@
         // =====================================================================
         //  ホットペッパーAPI（fetch + CORSプロキシ）
         // =====================================================================
-        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3') {
+        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false) {
             let params = `key=${HP_API_KEY}&lat=${lat}&lng=${lng}&range=${range}&count=100&format=json`;
 
             // ジャンル指定（APIは genre パラメータで複数指定可能）
@@ -618,6 +620,12 @@
             // 予算指定（複数予算コードを送信）
             if (budgetCodes.length > 0) {
                 params += `&budget=${budgetCodes.join(',')}`;
+            }
+            // 第1層: 営業中フィルター（API側で大まかに絞る）
+            if (openNow) {
+                const hour = new Date().getHours();
+                if (hour >= 11 && hour < 14) params += '&lunch=1';
+                if (hour >= 23 || hour < 5) params += '&midnight=1';
             }
 
             const baseUrl = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}`;
@@ -662,33 +670,38 @@
         }
 
         // =====================================================================
-        //  営業中判定
+        //  営業中判定（第2層: 定休日 + 第3層: テキスト解析）
         // =====================================================================
         function isOpenNow(shop) {
-            if (!shop.open) return true; // データなしは含める
+            if (!shop.open) return false; // データなしは除外（安全側）
 
             const now = new Date();
             const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
             const today = dayNames[now.getDay()];
             const nowMin = now.getHours() * 60 + now.getMinutes();
 
-            // 定休日チェック
-            if (shop.close) {
-                // 「日、祝日」「土（第１・第３）」など
+            // 第2層: 定休日チェック
+            if (shop.close && shop.close !== 'なし') {
                 if (shop.close.includes(today)) return false;
             }
 
-            // 営業時間パース: "18:00～23:00" のようなパターンを抽出
-            const timePattern = /(\d{1,2}):(\d{2})\s*[\uff5e〜~]\s*(\d{1,2}):(\d{2})/g;
+            // 第3層: 営業時間テキスト解析
+            // 曜日ブロックに分割して、今日に該当するブロックを特定
+            const text = shop.open;
+            const todayBlock = extractTodayBlock(text, today);
+
+            // 今日のブロックから時間パターンを抽出
+            const targetText = todayBlock || text; // ブロック特定できなければ全体
+            const timePattern = /(\d{1,2}):(\d{2})\s*[～〜~]\s*(?:翌)?\s*(\d{1,2}):(\d{2})/g;
             let match;
             let hasTimeData = false;
 
-            while ((match = timePattern.exec(shop.open)) !== null) {
+            while ((match = timePattern.exec(targetText)) !== null) {
                 hasTimeData = true;
                 let openMin = parseInt(match[1]) * 60 + parseInt(match[2]);
                 let closeMin = parseInt(match[3]) * 60 + parseInt(match[4]);
 
-                // 深夜跨ぎ対応（25:00 = 1500分 など）
+                // 深夜跨ぎ対応（翌0:00 や 25:00 など）
                 if (closeMin <= openMin) closeMin += 24 * 60;
                 let checkMin = nowMin;
                 if (checkMin < openMin && openMin > 12 * 60) checkMin += 24 * 60;
@@ -696,8 +709,58 @@
                 if (checkMin >= openMin && checkMin <= closeMin) return true;
             }
 
-            // 時間データが見つからなかった場合は含める
-            return !hasTimeData;
+            // 時間データがパースできた → 範囲外なので営業外
+            // 時間データがパースできなかった → 判定不能なので除外（安全側）
+            return false;
+        }
+
+        // 曜日ブロック抽出: "月～金: 11:00～14:00 ... 土: 18:00～22:00" → 今日のブロックを返す
+        function extractTodayBlock(text, today) {
+            // 曜日範囲パターン: "月～金" "火～土" "月～日" など
+            const dayOrder = '月火水木金土日';
+            const todayIdx = dayOrder.indexOf(today);
+            if (todayIdx === -1) return null;
+
+            // テキストを曜日ブロックに分割（「月～金、祝前日:」のようなパターンで区切る）
+            const blockPattern = /([月火水木金土日](?:[～〜~][月火水木金土日])?(?:[、,][月火水木金土日](?:[～〜~][月火水木金土日])?)*(?:[、,](?:祝日|祝前日))*)\s*[:：]/g;
+            let blockMatch;
+            let bestBlock = null;
+
+            while ((blockMatch = blockPattern.exec(text)) !== null) {
+                const daySpec = blockMatch[1];
+                if (isDayInSpec(daySpec, today, dayOrder)) {
+                    // このブロックの開始位置から次のブロックまでのテキストを取得
+                    const startPos = blockMatch.index + blockMatch[0].length;
+                    // 次のブロックまたはテキスト末尾まで
+                    blockPattern.lastIndex = startPos; // 一時的に進める
+                    const nextMatch = blockPattern.exec(text);
+                    const endPos = nextMatch ? nextMatch.index : text.length;
+                    blockPattern.lastIndex = startPos; // 元に戻す
+                    bestBlock = text.substring(startPos, endPos);
+                }
+            }
+            return bestBlock;
+        }
+
+        // 曜日指定に今日が含まれるか判定
+        function isDayInSpec(spec, today, dayOrder) {
+            const todayIdx = dayOrder.indexOf(today);
+            // 範囲指定: "月～金"
+            const rangePattern = /([月火水木金土日])[～〜~]([月火水木金土日])/g;
+            let rm;
+            while ((rm = rangePattern.exec(spec)) !== null) {
+                const startIdx = dayOrder.indexOf(rm[1]);
+                const endIdx = dayOrder.indexOf(rm[2]);
+                if (startIdx <= endIdx) {
+                    if (todayIdx >= startIdx && todayIdx <= endIdx) return true;
+                } else {
+                    // 土～月 のような跨ぎ
+                    if (todayIdx >= startIdx || todayIdx <= endIdx) return true;
+                }
+            }
+            // 個別指定: "土" "日"
+            if (spec.includes(today)) return true;
+            return false;
         }
 
         // =====================================================================
@@ -813,7 +876,9 @@
         // =====================================================================
         function renderChoicesUI() {
             choicesList.innerHTML = '';
-            choices.forEach((c, i) => {
+            // 店舗を先、カスタムを後に表示
+            const sorted = [...choices].sort((a, b) => (a.type === 'shop' ? 0 : 1) - (b.type === 'shop' ? 0 : 1));
+            sorted.forEach((c, i) => {
                 const color = PALETTE[i % PALETTE.length];
                 const el = document.createElement('div');
                 el.className = 'flex items-center gap-3 p-3 bg-gray-50 rounded-xl transition hover:bg-gray-100';
