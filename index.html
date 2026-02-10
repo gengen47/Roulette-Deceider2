@@ -750,16 +750,31 @@
                     statusBar.textContent = '⚠️ 位置情報が未取得です。';
                     return;
                 }
-                if (IS_DEBUG) {
-                    // デバッグモード: モックデータからジャンルフィルター
-                    choices = choices.filter(c => c.type !== 'shop');
-                    const filtered = MOCK_SHOPS.filter(s => !excludedGenres.has(s.genreCode));
-                    loadShops(filtered.length > 0 ? filtered : MOCK_SHOPS);
-                    renderChoicesUI();
-                    drawRoulette();
-                    statusBar.textContent = '🛠️ モックデータ（フィルター適用）';
-                } else {
-                    await searchShops();
+
+                // ローディング状態に切り替え
+                btnResearch.disabled = true;
+                btnResearch.textContent = '⏳ 検索中…';
+                btnResearch.style.opacity = '0.5';
+                btnResearch.style.pointerEvents = 'none';
+
+                try {
+                    if (IS_DEBUG) {
+                        // デバッグモード: モックデータからジャンルフィルター
+                        choices = choices.filter(c => c.type !== 'shop');
+                        const filtered = MOCK_SHOPS.filter(s => !excludedGenres.has(s.genreCode));
+                        loadShops(filtered.length > 0 ? filtered : MOCK_SHOPS);
+                        renderChoicesUI();
+                        drawRoulette();
+                        statusBar.textContent = '🛠️ モックデータ（フィルター適用）';
+                    } else {
+                        await searchShops();
+                    }
+                } finally {
+                    // ローディング解除
+                    btnResearch.disabled = false;
+                    btnResearch.textContent = '🔄 この条件で再検索';
+                    btnResearch.style.opacity = '1';
+                    btnResearch.style.pointerEvents = 'auto';
                 }
             });
         }
