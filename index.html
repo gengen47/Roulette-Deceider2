@@ -58,7 +58,7 @@
 
         #roulette-canvas {
             border-radius: 50%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, .15), 0 0 0 6px #FFAB40, 0 0 0 10px #212121;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
         }
 
         /* 三角のポインター */
@@ -294,12 +294,11 @@
 <body class="min-h-screen flex flex-col">
 
     <!-- ===== ヘッダー ===== -->
-    <header class="bg-accent text-white px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
-        <div class="flex items-center gap-2">
-            <span class="text-2xl">🎰</span>
-            <h1 class="text-lg font-extrabold tracking-tight">メシガチャ</h1>
-        </div>
-        <span class="chip">MVP</span>
+    <header class="px-4 py-4 flex items-center justify-center sticky top-0 z-50" style="background:#FAFAFA;">
+        <img id="header-logo" src="logo.png" alt="メシガチャ" style="height:60px; object-fit:contain;"
+            onerror="this.style.display='none'; document.getElementById('header-text').style.display='block';" />
+        <h1 id="header-text" class="text-2xl font-extrabold tracking-tight text-accent" style="display:none;">🎰 メシガチャ
+        </h1>
     </header>
 
     <!-- ===== メインコンテンツ ===== -->
@@ -1035,16 +1034,12 @@
 
             // 中心円
             ctx.beginPath();
-            ctx.arc(cx, cy, 22, 0, Math.PI * 2);
-            ctx.fillStyle = '#212121';
-            ctx.fill();
-            ctx.beginPath();
             ctx.arc(cx, cy, 18, 0, Math.PI * 2);
             ctx.fillStyle = '#FFAB40';
             ctx.fill();
             ctx.beginPath();
             ctx.arc(cx, cy, 8, 0, Math.PI * 2);
-            ctx.fillStyle = '#212121';
+            ctx.fillStyle = '#fff';
             ctx.fill();
         }
 
