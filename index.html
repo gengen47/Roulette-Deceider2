@@ -924,8 +924,16 @@
                     const id = parseInt(e.target.dataset.id);
                     const c = choices.find(x => x.id === id);
                     if (c) c.weight = parseInt(e.target.value);
-                    renderChoicesUI();
-                    drawRoulette();
+                    // パーセントのみ軽量更新（DOM全再構築しない）
+                    choicesList.querySelectorAll('input[type="range"]').forEach(s => {
+                        const cid = parseInt(s.dataset.id);
+                        const ch = choices.find(x => x.id === cid);
+                        if (ch) {
+                            const pctEl = s.parentElement.querySelector('span');
+                            if (pctEl) pctEl.textContent = calcPercent(ch) + '%';
+                        }
+                    });
+                    requestAnimationFrame(() => drawRoulette());
                 });
             });
 
