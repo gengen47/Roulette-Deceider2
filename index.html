@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Roulette Decider - 運命のゴハン、回して決めよう！</title>
+    <meta name="description" content="何食べる？で揉めたらルーレットで即決！周辺の飲食店とカスタム選択肢をまぜて運命の一食を決めよう。" />
+
+    <!-- ===== LinkSwitch プレースホルダー（バリューコマース収益化用） ===== -->
+    <!-- <script type="text/javascript" src="//tag.valuecommerce.com/linkswitch.js"></script> -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFAB40',
+                        accent: '#212121',
+                        surface: '#FAFAFA',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAFA;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ---------- ルーレット ---------- */
+        #roulette-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #roulette-canvas {
+            border-radius: 50%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .15), 0 0 0 6px #FFAB40, 0 0 0 10px #212121;
+        }
+
+        /* 三角のポインター */
+        .pointer {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 28px solid #212121;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .3));
+            z-index: 10;
+        }
+
+        /* ---------- START ボタン ---------- */
+        .btn-start {
+            background: linear-gradient(135deg, #FFAB40 0%, #FF8F00 100%);
+            color: #212121;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: .05em;
+            border: none;
+            border-radius: 9999px;
+            padding: .9rem 3rem;
+            box-shadow: 0 6px 20px rgba(255, 171, 64, .45);
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .btn-start:active {
+            transform: scale(.95);
+            box-shadow: 0 3px 10px rgba(255, 171, 64, .3);
+        }
+
+        .btn-start:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        /* ---------- スライダー ---------- */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #E0E0E0;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            background: #FFAB40;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+            cursor: pointer;
+        }
+
+        /* ---------- 結果モーダル ---------- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+            transform: translateY(30px);
+            transition: transform .3s;
+        }
+
+        .modal-backdrop.active .modal-card {
+            transform: translateY(0);
+        }
+
+        /* ---------- 雑多 ---------- */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            background: #FFF3E0;
+            color: #E65100;
+            padding: .3rem .75rem;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .fade-in {
+            animation: fadeIn .4s ease both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 追加入力 */
+        .add-input {
+            border: 2px dashed #FFAB40;
+            border-radius: .75rem;
+            padding: .5rem .75rem;
+            outline: none;
+            font-size: .875rem;
+            width: 100%;
+            transition: border-color .2s;
+        }
+
+        .add-input:focus {
+            border-color: #FF8F00;
+        }
+
+        /* ---------- フィルターパネル ---------- */
+        .filter-panel {
+            border: 1px solid #F0F0F0;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: max-height .3s ease;
+        }
+
+        .filter-toggle {
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .filter-toggle .arrow {
+            transition: transform .2s;
+        }
+
+        .filter-toggle.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .genre-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
+            padding: .35rem .7rem;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s;
+            border: 2px solid #E0E0E0;
+            background: #fff;
+            color: #616161;
+        }
+
+        .genre-chip.excluded {
+            border-color: #EF5350;
+            background: #FFEBEE;
+            color: #C62828;
+            text-decoration: line-through;
+        }
+
+        .budget-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23666'/%3E%3C/svg%3E") no-repeat right .75rem center;
+            border: 2px solid #E0E0E0;
+            border-radius: .75rem;
+            padding: .5rem 2rem .5rem .75rem;
+            font-size: .875rem;
+            outline: none;
+            transition: border-color .2s;
+            width: 100%;
+        }
+
+        .budget-select:focus {
+            border-color: #FFAB40;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: .875rem;
+            border: none;
+            border-radius: 9999px;
+            padding: .6rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(66, 165, 245, .35);
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .btn-search:active {
+            transform: scale(.95);
+        }
+
+        .btn-search:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- ===== ヘッダー ===== -->
+    <header class="bg-accent text-white px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-lg">
+        <div class="flex items-center gap-2">
+            <span class="text-2xl">🎰</span>
+            <h1 class="text-lg font-extrabold tracking-tight">Roulette Decider</h1>
+        </div>
+        <span class="chip">MVP</span>
+    </header>
+
+    <!-- ===== メインコンテンツ ===== -->
+    <main class="flex-1 flex flex-col items-center px-4 pb-8">
+
+        <!-- ステータス -->
+        <div id="status-bar" class="w-full max-w-md mt-4 mb-2 text-center text-sm text-gray-500 fade-in">
+            📍 位置情報を取得しています…
+        </div>
+
+        <!-- ===== フィルターパネル ===== -->
+        <section class="w-full max-w-md mt-2 mb-3 filter-panel bg-white shadow-sm fade-in">
+            <div id="filter-toggle" class="filter-toggle flex items-center justify-between px-4 py-3">
+                <h2 class="text-sm font-bold text-accent flex items-center gap-2">🔍 店舗フィルター</h2>
+                <span class="arrow text-gray-400 text-xs">▼</span>
+            </div>
+            <div id="filter-body" class="px-4 pb-4" style="display:none;">
+                <!-- ジャンル除外 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">除外するジャンル（タップで除外）</p>
+                <div id="genre-chips" class="flex flex-wrap gap-2 mb-4"></div>
+
+                <!-- 距離 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">📏 現在地からの距離</p>
+                <select id="distance-range" class="budget-select mb-4">
+                    <option value="1">300m以内</option>
+                    <option value="2">500m以内</option>
+                    <option value="3" selected>1km以内</option>
+                    <option value="4">2km以内</option>
+                    <option value="5">3km以内</option>
+                </select>
+
+                <!-- 予算帯 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">💰 予算帯</p>
+                <div class="flex gap-2 mb-4">
+                    <select id="budget-min" class="budget-select flex-1">
+                        <option value="">下限なし</option>
+                    </select>
+                    <span class="self-center text-gray-400 text-sm font-bold">〜</span>
+                    <select id="budget-max" class="budget-select flex-1">
+                        <option value="">上限なし</option>
+                    </select>
+                </div>
+
+                <!-- 営業中フィルター -->
+                <div class="flex items-center gap-2 mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer text-sm font-semibold text-accent">
+                        <input type="checkbox" id="filter-open-now" class="w-5 h-5 rounded accent-primary" />
+                        🟢 営業中の店舗のみ表示
+                    </label>
+                </div>
+
+                <!-- 再検索ボタン -->
+                <button id="btn-research" class="btn-search w-full">🔄 この条件で再検索</button>
+            </div>
+        </section>
+
+        <!-- ルーレット -->
+        <section id="roulette-container" class="my-4">
+            <div class="pointer"></div>
+            <canvas id="roulette-canvas" width="300" height="300"></canvas>
+        </section>
+
+        <!-- START ボタン -->
+        <button id="btn-start" class="btn-start mt-2 mb-6" disabled>START</button>
+
+        <!-- ===== 設定パネル ===== -->
+        <section id="settings-panel" class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in">
+            <h2 class="text-base font-bold text-accent flex items-center gap-2">⚙️ 選択肢 & 確率設定</h2>
+
+            <!-- 選択肢リスト（動的生成） -->
+            <div id="choices-list" class="space-y-3"></div>
+
+            <!-- カスタム選択肢追加 -->
+            <div class="pt-2 border-t border-gray-100">
+                <p class="text-xs text-gray-400 mb-2 font-semibold">＋ カスタム選択肢を追加</p>
+                <div class="flex gap-2">
+                    <input id="custom-input" type="text" class="add-input flex-1" placeholder="例：マクドナルド"
+                        maxlength="20" />
+                    <button id="btn-add-custom"
+                        class="bg-primary text-accent font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== 結果モーダル ===== -->
+    <div id="result-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <div id="result-emoji" class="text-5xl mb-3">🎉</div>
+            <h3 id="result-title" class="text-xl font-extrabold text-accent mb-1"></h3>
+            <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
+            <img id="result-img" class="w-full rounded-xl mb-4 hidden" alt="店舗画像" />
+            <a id="result-action" href="#" target="_blank" rel="noopener"
+                class="inline-block bg-primary text-accent font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
+            </a>
+            <br />
+            <!-- リトライ（将来的に広告を挟める設計） -->
+            <!-- ここに広告スロットを挿入可能 -->
+            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄
+                もう一回回す</button>
+        </div>
+    </div>
+
+    <!-- ============================= JavaScript ============================= -->
+    <script>
+        // =====================================================================
+        //  設定
+        // =====================================================================
+        const IS_DEBUG = false; // true: モックデータモード / false: 本番（ホットペッパーAPI）
+
+        // ★本番時はここにAPIキーを設定
+        const HP_API_KEY = 'f008a1b21c675ccc';
+
+        // =====================================================================
+        //  モックデータ
+        // =====================================================================
+        const MOCK_SHOPS = [
+            { name: '焼肉キング 渋谷店', catch: '食べ放題が大人気！', genre: '焼肉', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'スシロー 新宿東口店', catch: '回転寿司ならここ', genre: '寿司', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'サイゼリヤ 池袋店', catch: 'コスパ最強イタリアン', genre: 'イタリアン', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'CoCo壱番屋 目黒店', catch: 'カレーの王道', genre: 'カレー', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: '天下一品 六本木店', catch: 'こってりラーメン', genre: 'ラーメン', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: '大戸屋 品川店', catch: 'ちゃんとゴハン', genre: '和食', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'マクドナルド 東京駅店', catch: 'スマイル0円！', genre: 'ファストフード', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: '鳥貴族 恵比寿店', catch: '全品均一価格！', genre: '居酒屋', photo: '', url: 'https://www.hotpepper.jp/' },
+        ];
+
+        // デフォルトカスタム選択肢
+        const DEFAULT_CUSTOM = [
+            { name: 'コンビニ', emoji: '🏪' },
+            { name: '自炊', emoji: '🍳' },
+            { name: '断食（食べない）', emoji: '🧘' },
+        ];
+
+        // ジャンルマスタ
+        const GENRES = [
+            { code: 'G001', name: '居酒屋', emoji: '🍶' },
+            { code: 'G002', name: 'ダイニングバー・バル', emoji: '🍷' },
+            { code: 'G003', name: '創作料理', emoji: '🎨' },
+            { code: 'G004', name: '和食', emoji: '🍣' },
+            { code: 'G005', name: '洋食', emoji: '🍝' },
+            { code: 'G006', name: 'イタリアン・フレンチ', emoji: '🇮🇹' },
+            { code: 'G007', name: '中華', emoji: '🥟' },
+            { code: 'G008', name: '焼肉・ホルモン', emoji: '🥩' },
+            { code: 'G017', name: '韓国料理', emoji: '🇰🇷' },
+            { code: 'G009', name: 'アジア・エスニック', emoji: '🍛' },
+            { code: 'G010', name: '各国料理', emoji: '🌍' },
+            { code: 'G011', name: 'カラオケ・パーティ', emoji: '🎤' },
+            { code: 'G012', name: 'バー・カクテル', emoji: '🍸' },
+            { code: 'G013', name: 'ラーメン', emoji: '🍜' },
+            { code: 'G016', name: 'お好み焼き・もんじゃ', emoji: '🥞' },
+            { code: 'G014', name: 'カフェ・スイーツ', emoji: '☕' },
+            { code: 'G015', name: 'その他グルメ', emoji: '🍴' },
+        ];
+
+        // 予算マスタ（安い順）
+        const BUDGETS = [
+            { code: 'B009', name: '〜500円' },
+            { code: 'B010', name: '501〜1000円' },
+            { code: 'B011', name: '1001〜1500円' },
+            { code: 'B001', name: '1501〜2000円' },
+            { code: 'B002', name: '2001〜3000円' },
+            { code: 'B003', name: '3001〜4000円' },
+            { code: 'B008', name: '4001〜5000円' },
+            { code: 'B004', name: '5001〜7000円' },
+            { code: 'B005', name: '7001〜10000円' },
+            { code: 'B006', name: '10001〜15000円' },
+            { code: 'B012', name: '15001〜20000円' },
+            { code: 'B013', name: '20001〜30000円' },
+            { code: 'B014', name: '30001円〜' },
+        ];
+
+        // フィルター状態
+        let excludedGenres = new Set(); // 除外するジャンルコード
+        let userLocation = null;        // { lat, lng }
+
+        // ルーレットのカラーパレット
+        const PALETTE = [
+            '#FFAB40', '#FF7043', '#AB47BC', '#42A5F5', '#66BB6A',
+            '#FFEE58', '#EF5350', '#26C6DA', '#8D6E63', '#78909C',
+            '#EC407A', '#7E57C2', '#29B6F6', '#9CCC65', '#FFA726',
+        ];
+
+        // =====================================================================
+        //  State
+        // =====================================================================
+        let choices = [];   // { id, name, type:'shop'|'custom', weight, enabled, data? }
+        let spinning = false;
+        let idCounter = 0;
+
+        // DOM
+        const canvas = document.getElementById('roulette-canvas');
+        const ctx = canvas.getContext('2d');
+        const btnStart = document.getElementById('btn-start');
+        const choicesList = document.getElementById('choices-list');
+        const statusBar = document.getElementById('status-bar');
+        const modal = document.getElementById('result-modal');
+        const customInput = document.getElementById('custom-input');
+        const btnAdd = document.getElementById('btn-add-custom');
+
+        // HiDPI
+        const dpr = window.devicePixelRatio || 1;
+        const SIZE = 300;
+        canvas.width = SIZE * dpr;
+        canvas.height = SIZE * dpr;
+        canvas.style.width = SIZE + 'px';
+        canvas.style.height = SIZE + 'px';
+        ctx.scale(dpr, dpr);
+
+        // =====================================================================
+        //  初期化
+        // =====================================================================
+        async function init() {
+            // フィルターUIを初期化
+            initFilterUI();
+
+            try {
+                if (IS_DEBUG) {
+                    statusBar.textContent = '🛠️ デバッグモード（モックデータ使用）';
+                    loadShops(MOCK_SHOPS);
+                } else {
+                    statusBar.textContent = '📍 位置情報を取得しています…';
+                    const pos = await getLocation();
+                    userLocation = pos;
+                    await searchShops();
+                }
+            } catch (e) {
+                console.error(e);
+                statusBar.textContent = '⚠️ 位置情報 / API取得に失敗。モックデータで動作します。';
+                loadShops(MOCK_SHOPS);
+            }
+
+            // デフォルトカスタム選択肢
+            DEFAULT_CUSTOM.forEach(c => {
+                addChoice(c.name, 'custom', 5, false, { emoji: c.emoji });
+            });
+
+            renderChoicesUI();
+            drawRoulette();
+            btnStart.disabled = false;
+        }
+
+        // 店舗検索（フィルター適用）
+        async function searchShops() {
+            statusBar.textContent = '� 周辺の飲食店を検索中…';
+            btnStart.disabled = true;
+
+            // フィルター条件を収集
+            const budgetMin = document.getElementById('budget-min').value;
+            const budgetMax = document.getElementById('budget-max').value;
+            const includedGenres = GENRES
+                .filter(g => !excludedGenres.has(g.code))
+                .map(g => g.code);
+
+            // 予算コードの範囲をリストで取得
+            let budgetCodes = [];
+            if (budgetMin || budgetMax) {
+                const minIdx = budgetMin ? BUDGETS.findIndex(b => b.code === budgetMin) : 0;
+                const maxIdx = budgetMax ? BUDGETS.findIndex(b => b.code === budgetMax) : BUDGETS.length - 1;
+                budgetCodes = BUDGETS.slice(minIdx, maxIdx + 1).map(b => b.code);
+            }
+
+            const rangeVal = document.getElementById('distance-range').value;
+
+            try {
+                let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal);
+
+                // 営業中フィルター
+                if (document.getElementById('filter-open-now').checked) {
+                    const filtered = shops.filter(s => isOpenNow(s));
+                    shops = filtered.length > 0 ? filtered : shops;
+                }
+
+                // 既存の店舗選択肢をクリア
+                choices = choices.filter(c => c.type !== 'shop');
+                const pickCount = loadShops(shops);
+                renderChoicesUI();
+                drawRoulette();
+                statusBar.textContent = `📍 周辺 ${shops.length} 店舗からランダム${pickCount}店舗を選出`;
+            } catch (e) {
+                console.error(e);
+                if (choices.filter(c => c.type === 'shop').length === 0) {
+                    statusBar.textContent = '⚠️ 該当店舗なし。条件を緩めてみてください。';
+                    loadShops(MOCK_SHOPS);
+                    renderChoicesUI();
+                    drawRoulette();
+                }
+            }
+            btnStart.disabled = false;
+        }
+
+        // =====================================================================
+        //  Geolocation
+        // =====================================================================
+        function getLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) return reject('Geolocation not supported');
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+                    err => reject(err),
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            });
+        }
+
+        // =====================================================================
+        //  ホットペッパーAPI（fetch + CORSプロキシ）
+        // =====================================================================
+        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3') {
+            let params = `key=${HP_API_KEY}&lat=${lat}&lng=${lng}&range=${range}&count=100&format=json`;
+
+            // ジャンル指定（APIは genre パラメータで複数指定可能）
+            if (genreCodes.length > 0 && genreCodes.length < GENRES.length) {
+                params += `&genre=${genreCodes.join(',')}`;
+            }
+            // 予算指定（複数予算コードを送信）
+            if (budgetCodes.length > 0) {
+                params += `&budget=${budgetCodes.join(',')}`;
+            }
+
+            const baseUrl = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}`;
+
+            // CORSプロキシのリスト（順番に試行）
+            const proxyUrls = [
+                `https://corsproxy.io/?${encodeURIComponent(baseUrl)}`,
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`,
+                baseUrl,
+            ];
+
+            for (const url of proxyUrls) {
+                try {
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 8000);
+
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timer);
+
+                    if (!res.ok) continue;
+
+                    const data = await res.json();
+                    if (data.results && data.results.shop && data.results.shop.length > 0) {
+                        return data.results.shop.map(s => ({
+                            name: s.name,
+                            catch: s.catch || '',
+                            genre: s.genre ? s.genre.name : '',
+                            genreCode: s.genre ? s.genre.code : '',
+                            photo: s.photo && s.photo.pc ? s.photo.pc.l : '',
+                            url: s.urls ? s.urls.pc : '',
+                            budget: s.budget ? s.budget.name : '',
+                            open: s.open || '',
+                            close: s.close || '',
+                        }));
+                    }
+                } catch (e) {
+                    console.warn('API proxy failed:', url, e.message);
+                    continue;
+                }
+            }
+            throw new Error('All API attempts failed');
+        }
+
+        // =====================================================================
+        //  営業中判定
+        // =====================================================================
+        function isOpenNow(shop) {
+            if (!shop.open) return true; // データなしは含める
+
+            const now = new Date();
+            const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+            const today = dayNames[now.getDay()];
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+
+            // 定休日チェック
+            if (shop.close) {
+                // 「日、祝日」「土（第１・第３）」など
+                if (shop.close.includes(today)) return false;
+            }
+
+            // 営業時間パース: "18:00～23:00" のようなパターンを抽出
+            const timePattern = /(\d{1,2}):(\d{2})\s*[\uff5e〜~]\s*(\d{1,2}):(\d{2})/g;
+            let match;
+            let hasTimeData = false;
+
+            while ((match = timePattern.exec(shop.open)) !== null) {
+                hasTimeData = true;
+                let openMin = parseInt(match[1]) * 60 + parseInt(match[2]);
+                let closeMin = parseInt(match[3]) * 60 + parseInt(match[4]);
+
+                // 深夜跨ぎ対応（25:00 = 1500分 など）
+                if (closeMin <= openMin) closeMin += 24 * 60;
+                let checkMin = nowMin;
+                if (checkMin < openMin && openMin > 12 * 60) checkMin += 24 * 60;
+
+                if (checkMin >= openMin && checkMin <= closeMin) return true;
+            }
+
+            // 時間データが見つからなかった場合は含める
+            return !hasTimeData;
+        }
+
+        // =====================================================================
+        //  フィルターUI初期化
+        // =====================================================================
+        function initFilterUI() {
+            const chipsContainer = document.getElementById('genre-chips');
+            const budgetMinSel = document.getElementById('budget-min');
+            const budgetMaxSel = document.getElementById('budget-max');
+            const filterToggle = document.getElementById('filter-toggle');
+            const filterBody = document.getElementById('filter-body');
+            const btnResearch = document.getElementById('btn-research');
+
+            // ジャンルチップ生成
+            GENRES.forEach(g => {
+                const chip = document.createElement('span');
+                chip.className = 'genre-chip';
+                chip.dataset.code = g.code;
+                chip.textContent = `${g.emoji} ${g.name}`;
+                chip.addEventListener('click', () => {
+                    if (excludedGenres.has(g.code)) {
+                        excludedGenres.delete(g.code);
+                        chip.classList.remove('excluded');
+                    } else {
+                        excludedGenres.add(g.code);
+                        chip.classList.add('excluded');
+                    }
+                });
+                chipsContainer.appendChild(chip);
+            });
+
+            // 予算セレクト生成
+            BUDGETS.forEach(b => {
+                const opt1 = new Option(b.name, b.code);
+                const opt2 = new Option(b.name, b.code);
+                budgetMinSel.appendChild(opt1);
+                budgetMaxSel.appendChild(opt2);
+            });
+
+            // トグル開閉
+            filterToggle.addEventListener('click', () => {
+                const isOpen = filterBody.style.display !== 'none';
+                filterBody.style.display = isOpen ? 'none' : 'block';
+                filterToggle.classList.toggle('open', !isOpen);
+            });
+
+            // 再検索ボタン
+            btnResearch.addEventListener('click', async () => {
+                if (!userLocation && !IS_DEBUG) {
+                    statusBar.textContent = '⚠️ 位置情報が未取得です。';
+                    return;
+                }
+                if (IS_DEBUG) {
+                    // デバッグモード: モックデータからジャンルフィルター
+                    choices = choices.filter(c => c.type !== 'shop');
+                    const filtered = MOCK_SHOPS.filter(s => !excludedGenres.has(s.genreCode));
+                    loadShops(filtered.length > 0 ? filtered : MOCK_SHOPS);
+                    renderChoicesUI();
+                    drawRoulette();
+                    statusBar.textContent = '🛠️ モックデータ（フィルター適用）';
+                } else {
+                    await searchShops();
+                }
+            });
+        }
+
+        // =====================================================================
+        //  ショップロード（ランダム5店舗）
+        // =====================================================================
+        function loadShops(allShops) {
+            const shuffled = [...allShops].sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, Math.min(5, shuffled.length));
+            picked.forEach(shop => {
+                addChoice(shop.name, 'shop', 5, true, shop);
+            });
+            return picked.length;
+        }
+
+        // =====================================================================
+        //  選択肢管理
+        // =====================================================================
+        function addChoice(name, type, weight, enabled, data) {
+            choices.push({ id: idCounter++, name, type, weight, enabled, data: data || {} });
+        }
+
+        function removeChoice(id) {
+            choices = choices.filter(c => c.id !== id);
+            renderChoicesUI();
+            drawRoulette();
+        }
+
+        function getEnabledChoices() {
+            return choices.filter(c => c.enabled);
+        }
+
+        // =====================================================================
+        //  UI: 選択肢リスト描画
+        // =====================================================================
+        function renderChoicesUI() {
+            choicesList.innerHTML = '';
+            choices.forEach((c, i) => {
+                const color = PALETTE[i % PALETTE.length];
+                const el = document.createElement('div');
+                el.className = 'flex items-center gap-3 p-3 bg-gray-50 rounded-xl transition hover:bg-gray-100';
+
+                const emoji = c.type === 'shop' ? '🍽️' : (c.data.emoji || '✨');
+                const pct = calcPercent(c);
+
+                el.innerHTML = `
+        <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
+          <input type="checkbox" data-id="${c.id}" ${c.enabled ? 'checked' : ''}
+                 class="w-5 h-5 rounded accent-primary" />
+          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:${color}"></span>
+        </label>
+        <div class="flex-1 min-w-0">
+          ${c.type === 'shop' && c.data.url
+                        ? `<a href="${c.data.url}" target="_blank" rel="noopener" class="text-sm font-semibold text-accent truncate block hover:text-orange-600 transition" style="text-decoration:none">${emoji} ${c.name} <span class="text-xs text-gray-400">↗</span></a>`
+                        : `<p class="text-sm font-semibold text-accent truncate">${emoji} ${c.name}</p>`
+                    }
+          <div class="flex items-center gap-2 mt-1">
+            <input type="range" min="1" max="10" value="${c.weight}" data-id="${c.id}"
+                   class="flex-1" style="accent-color:${color}" />
+            <span class="text-xs font-bold w-12 text-right" style="color:${color}">${pct}%</span>
+          </div>
+        </div>
+        ${c.type === 'custom' ? `<button data-remove="${c.id}" class="text-gray-300 hover:text-red-400 text-lg transition ml-1">✕</button>` : ''}
+      `;
+                choicesList.appendChild(el);
+            });
+
+            // イベント
+            choicesList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', e => {
+                    const id = parseInt(e.target.dataset.id);
+                    const c = choices.find(x => x.id === id);
+                    if (c) c.enabled = e.target.checked;
+                    renderChoicesUI();
+                    drawRoulette();
+                });
+            });
+
+            choicesList.querySelectorAll('input[type="range"]').forEach(sl => {
+                sl.addEventListener('input', e => {
+                    const id = parseInt(e.target.dataset.id);
+                    const c = choices.find(x => x.id === id);
+                    if (c) c.weight = parseInt(e.target.value);
+                    renderChoicesUI();
+                    drawRoulette();
+                });
+            });
+
+            choicesList.querySelectorAll('[data-remove]').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    removeChoice(parseInt(e.target.dataset.remove));
+                });
+            });
+        }
+
+        function calcPercent(choice) {
+            const enabled = getEnabledChoices();
+            if (!choice.enabled || enabled.length === 0) return 0;
+            const total = enabled.reduce((s, c) => s + c.weight, 0);
+            return Math.round((choice.weight / total) * 100);
+        }
+
+        // =====================================================================
+        //  カスタム選択肢追加
+        // =====================================================================
+        btnAdd.addEventListener('click', () => {
+            const val = customInput.value.trim();
+            if (!val) return;
+            addChoice(val, 'custom', 5, true, { emoji: '🌟' });
+            customInput.value = '';
+            renderChoicesUI();
+            drawRoulette();
+        });
+        customInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); btnAdd.click(); }
+        });
+
+        // =====================================================================
+        //  Canvas ルーレット描画
+        // =====================================================================
+        let currentRotation = 0;
+
+        function drawRoulette(rotation = currentRotation) {
+            const enabled = getEnabledChoices();
+            ctx.clearRect(0, 0, SIZE, SIZE);
+            const cx = SIZE / 2, cy = SIZE / 2, r = SIZE / 2 - 4;
+
+            if (enabled.length === 0) {
+                ctx.fillStyle = '#E0E0E0';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#999';
+                ctx.font = '600 14px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('選択肢を追加してください', cx, cy);
+                return;
+            }
+
+            const total = enabled.reduce((s, c) => s + c.weight, 0);
+            let angle = rotation;
+
+            enabled.forEach((c, i) => {
+                const sliceAngle = (c.weight / total) * Math.PI * 2;
+                const color = PALETTE[choices.indexOf(c) % PALETTE.length];
+
+                // セクター
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, r, angle, angle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // ラベル
+                const mid = angle + sliceAngle / 2;
+                const labelR = r * 0.62;
+                const lx = cx + Math.cos(mid) * labelR;
+                const ly = cy + Math.sin(mid) * labelR;
+
+                ctx.save();
+                ctx.translate(lx, ly);
+                ctx.rotate(mid + Math.PI / 2);
+
+                const fontSize = sliceAngle > 0.4 ? 12 : sliceAngle > 0.25 ? 10 : 8;
+                ctx.font = `700 ${fontSize}px Inter, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = 'rgba(0,0,0,.4)';
+                ctx.shadowBlur = 3;
+
+                // 名前を短縮
+                let label = c.name.length > 8 ? c.name.slice(0, 7) + '…' : c.name;
+                ctx.fillText(label, 0, 0);
+
+                ctx.restore();
+                angle += sliceAngle;
+            });
+
+            // 中心円
+            ctx.beginPath();
+            ctx.arc(cx, cy, 22, 0, Math.PI * 2);
+            ctx.fillStyle = '#212121';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFAB40';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#212121';
+            ctx.fill();
+        }
+
+        // =====================================================================
+        //  ルーレット回転アニメーション
+        // =====================================================================
+        btnStart.addEventListener('click', () => {
+            if (spinning) return;
+            const enabled = getEnabledChoices();
+            if (enabled.length === 0) return;
+
+            spinning = true;
+            btnStart.disabled = true;
+
+            // 重み付き抽選 → 当選インデックス決定
+            const total = enabled.reduce((s, c) => s + c.weight, 0);
+            let rand = Math.random() * total;
+            let winnerIdx = 0;
+            for (let i = 0; i < enabled.length; i++) {
+                rand -= enabled[i].weight;
+                if (rand <= 0) { winnerIdx = i; break; }
+            }
+
+            // 当選セクターの中央角度を計算
+            let cumAngle = 0;
+            for (let i = 0; i < winnerIdx; i++) {
+                cumAngle += (enabled[i].weight / total) * Math.PI * 2;
+            }
+            const winSlice = (enabled[winnerIdx].weight / total) * Math.PI * 2;
+            const winMid = cumAngle + winSlice / 2;
+
+            // ポインターは上部（-π/2）なので、当選中央がそこに来るように最終角度を計算
+            // 最終的な回転量 = 複数回転 + 調整角度
+            const extraSpins = 5 + Math.floor(Math.random() * 3); // 5〜7回転
+            const targetAngle = extraSpins * Math.PI * 2 + (Math.PI * 2 - winMid - Math.PI / 2);
+
+            const startTime = performance.now();
+            const duration = 4000 + Math.random() * 1000; // 4〜5秒
+            const startRotation = currentRotation;
+
+            function animate(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(elapsed / duration, 1);
+                // イージング: easeOutCubic → 最後にゆっくり
+                const ease = 1 - Math.pow(1 - t, 3);
+                currentRotation = startRotation + targetAngle * ease;
+
+                drawRoulette(currentRotation);
+
+                if (t < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    spinning = false;
+                    btnStart.disabled = false;
+                    showResult(enabled[winnerIdx]);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        });
+
+        // =====================================================================
+        //  結果表示
+        // =====================================================================
+        function showResult(winner) {
+            const titleEl = document.getElementById('result-title');
+            const subEl = document.getElementById('result-sub');
+            const imgEl = document.getElementById('result-img');
+            const actionEl = document.getElementById('result-action');
+            const emojiEl = document.getElementById('result-emoji');
+
+            if (winner.type === 'shop') {
+                emojiEl.textContent = '🎉';
+                titleEl.textContent = winner.name;
+                subEl.textContent = winner.data.catch || winner.data.genre || '運命のお店が決まりました！';
+
+                if (winner.data.photo) {
+                    imgEl.src = winner.data.photo;
+                    imgEl.classList.remove('hidden');
+                } else {
+                    imgEl.classList.add('hidden');
+                }
+
+                actionEl.textContent = '🔥 今すぐ予約する（ホットペッパー）';
+                actionEl.href = winner.data.url || 'https://www.hotpepper.jp/';
+                actionEl.classList.remove('hidden');
+            } else {
+                const emojis = { 'コンビニ': '🏪', '自炊': '🍳', '断食（食べない）': '🧘' };
+                emojiEl.textContent = emojis[winner.name] || winner.data.emoji || '✨';
+                titleEl.textContent = winner.name;
+
+                const messages = {
+                    'コンビニ': '近くのコンビニへGO！意外な新商品に出会えるかも 🛒',
+                    '自炊': '今日はシェフモード発動！冷蔵庫の中身で奇跡を起こそう 👨‍🍳',
+                    '断食（食べない）': '修行僧モード突入。精神を鍛えるチャンスです 🙏',
+                };
+                subEl.textContent = messages[winner.name] || `「${winner.name}」に決定！運命を受け入れよう 🎲`;
+
+                imgEl.classList.add('hidden');
+
+                if (winner.name === '自炊') {
+                    actionEl.textContent = '📖 レシピを検索（Google）';
+                    actionEl.href = 'https://www.google.com/search?q=簡単+レシピ+今日の晩ごはん';
+                    actionEl.classList.remove('hidden');
+                } else if (winner.name === 'コンビニ') {
+                    actionEl.textContent = '🗺️ 近くのコンビニを探す';
+                    actionEl.href = 'https://www.google.com/maps/search/コンビニ/';
+                    actionEl.classList.remove('hidden');
+                } else if (winner.name === '断食（食べない）') {
+                    actionEl.textContent = '🧘 瞑想BGMを聴く';
+                    actionEl.href = 'https://www.youtube.com/results?search_query=瞑想+BGM';
+                    actionEl.classList.remove('hidden');
+                } else {
+                    actionEl.textContent = `🔍 "${winner.name}" を検索`;
+                    actionEl.href = `https://www.google.com/search?q=${encodeURIComponent(winner.name)}+近く`;
+                    actionEl.classList.remove('hidden');
+                }
+            }
+
+            modal.classList.add('active');
+        }
+
+        // リトライ
+        document.getElementById('btn-retry').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // モーダル外タップで閉じる
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        // =====================================================================
+        //  起動
+        // =====================================================================
+        init();
+    </script>
+</body>
+
+</html>
