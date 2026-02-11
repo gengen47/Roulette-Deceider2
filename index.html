@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>メシガチャ - 運命のゴハン、回して決めよう！</title>
-    <meta name="description" content="何食べる？で揉めたらルーレットで即決！周辺の飲食店とカスタム選択肢をまぜて運命の一食を決めよう。" />
+    <meta name="description" content="何食べる？で悩んだらルーレットで即決！周辺の飲食店から運命の一食を決めよう。" />
 
     <!-- ===== LinkSwitch プレースホルダー（バリューコマース収益化用） ===== -->
     <!-- <script type="text/javascript" src="//tag.valuecommerce.com/linkswitch.js"></script> -->
@@ -294,8 +294,10 @@
 <body class="min-h-screen flex flex-col">
 
     <!-- ===== ヘッダー ===== -->
-    <header class="px-4 pt-4 pb-0 flex items-center justify-center sticky top-0 z-50" style="background:#FAFAFA;">
-        <img src="logo.svg" alt="メシガチャ" style="height:60px; object-fit:contain;" />
+    <header class="px-4 pt-4 pb-2 flex flex-col items-center justify-center sticky top-0 z-50"
+        style="background:#FAFAFA;">
+        <img src="logo.svg" alt="メシガチャ" style="height:44px; object-fit:contain;" />
+        <p class="text-xs text-gray-400 mt-1">周辺の飲食店から運命の一食を決めよう。</p>
     </header>
 
     <!-- ===== メインコンテンツ ===== -->
@@ -389,7 +391,7 @@
             <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
             <img id="result-img" class="w-full rounded-xl mb-4 hidden" alt="店舗画像" />
             <a id="result-action" href="#" target="_blank" rel="noopener"
-                class="inline-block bg-primary text-accent font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
+                class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
             </a>
             <br />
             <!-- リトライ（将来的に広告を挟める設計） -->
