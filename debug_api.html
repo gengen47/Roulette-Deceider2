@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <title>API Test</title>
+</head>
+
+<body>
+    <h1>API Test</h1>
+    <div id="status">Testing...</div>
+    <div id="output"></div>
+
+    <script>
+        const HP_API_KEY = 'f008a1b213872439'; // extracted from index.html (implied)
+        const GENRES = []; // Mock
+
+        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false) {
+            let params = `key=${HP_API_KEY}&lat=${lat}&lng=${lng}&range=${range}&count=100&format=jsonp`;
+
+            return new Promise((resolve, reject) => {
+                const callbackName = 'jsonp_' + Math.round(100000 * Math.random());
+                console.log('JSONP Request:', `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}&callback=${callbackName}`);
+
+                window[callbackName] = (data) => {
+                    console.log('JSONP Callback triggered', data);
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    if (data.results.error) {
+                        reject(new Error(data.results.error[0].message));
+                    } else {
+                        resolve(data.results.shop || []);
+                    }
+                };
+
+                const script = document.createElement('script');
+                script.src = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}&callback=${callbackName}`;
+                script.onerror = () => {
+                    console.error('JSONP script load error');
+                    delete window[callbackName];
+                    document.body.removeChild(script);
+                    reject(new Error('JSONP request failed'));
+                };
+                document.body.appendChild(script);
+            });
+        }
+
+        async function runTest() {
+            try {
+                const shops = await fetchShops(35.681236, 139.767125); // Tokyo Station
+                document.getElementById('status').innerText = 'Success! ' + shops.length + ' shops found.';
+                document.getElementById('output').innerText = JSON.stringify(shops.slice(0, 3), null, 2);
+            } catch (e) {
+                document.getElementById('status').innerText = 'Failed: ' + e.message;
+                console.error(e);
+            }
+        }
+
+        runTest();
+    </script>
+</body>
+
+</html>

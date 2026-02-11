@@ -667,7 +667,7 @@
         //  ホットペッパーAPI（fetch + CORSプロキシ）
         // =====================================================================
         async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false) {
-            let params = `key=${HP_API_KEY}&lat=${lat}&lng=${lng}&range=${range}&count=100&format=jsonp`;
+            let params = `key=${HP_API_KEY}&lat=${lat}&lng=${lng}&range=${range}&count=100&format=json`;
 
             // ジャンル指定（APIは genre パラメータで複数指定可能）
             if (genreCodes.length > 0 && genreCodes.length < GENRES.length) {
@@ -684,15 +684,31 @@
                 if (hour >= 23 || hour < 5) params += '&midnight=1';
             }
 
-            return new Promise((resolve, reject) => {
-                const callbackName = 'jsonp_' + Math.round(100000 * Math.random());
-                window[callbackName] = (data) => {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    if (data.results.error) {
-                        reject(new Error(data.results.error[0].message));
-                    } else {
-                        const shops = (data.results.shop || []).map(s => ({
+            const baseUrl = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}`;
+
+            // CORSプロキシのリスト（信頼性の高い順）
+            const proxyUrls = [
+                `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(baseUrl)}`,
+            ];
+
+            for (const url of proxyUrls) {
+                try {
+                    console.log('Trying proxy:', url);
+                    const controller = new AbortController();
+                    const timer = setTimeout(() => controller.abort(), 10000); // 10秒に延長
+
+                    const res = await fetch(url, { signal: controller.signal });
+                    clearTimeout(timer);
+
+                    if (!res.ok) {
+                        console.warn(`Proxy ${url} returned status ${res.status}`);
+                        continue;
+                    }
+
+                    const data = await res.json();
+                    if (data.results && data.results.shop && data.results.shop.length > 0) {
+                        return data.results.shop.map(s => ({
                             name: s.name,
                             catch: s.catch || '',
                             genre: s.genre ? s.genre.name : '',
@@ -703,19 +719,13 @@
                             open: s.open || '',
                             close: s.close || '',
                         }));
-                        resolve(shops);
                     }
-                };
-
-                const script = document.createElement('script');
-                script.src = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}&callback=${callbackName}`;
-                script.onerror = () => {
-                    delete window[callbackName];
-                    document.body.removeChild(script);
-                    reject(new Error('JSONP request failed'));
-                };
-                document.body.appendChild(script);
-            });
+                } catch (e) {
+                    console.warn('API proxy failed:', url, e.message);
+                    continue;
+                }
+            }
+            throw new Error('All API proxy attempts failed. Please try again later.');
         }
 
         // =====================================================================
