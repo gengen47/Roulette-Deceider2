@@ -664,68 +664,49 @@
         }
 
         // =====================================================================
-        //  ホットペッパーAPI（fetch + CORSプロキシ）
+        //  ホットペッパーAPI（Vercel Serverless Function経由）
         // =====================================================================
         async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false) {
-            let params = `key=${HP_API_KEY}&lat=${lat}&lng=${lng}&range=${range}&count=100&format=json`;
+            let params = `lat=${lat}&lng=${lng}&range=${range}&count=100`;
 
-            // ジャンル指定（APIは genre パラメータで複数指定可能）
+            // ジャンル指定
             if (genreCodes.length > 0 && genreCodes.length < GENRES.length) {
                 params += `&genre=${genreCodes.join(',')}`;
             }
-            // 予算指定（複数予算コードを送信）
+            // 予算指定
             if (budgetCodes.length > 0) {
                 params += `&budget=${budgetCodes.join(',')}`;
             }
-            // 第1層: 営業中フィルター（API側で大まかに絞る）
+            // 営業中フィルター（サーバーサイド処理用フラグ）
             if (openNow) {
-                const hour = new Date().getHours();
-                if (hour >= 11 && hour < 14) params += '&lunch=1';
-                if (hour >= 23 || hour < 5) params += '&midnight=1';
+                params += '&open_now=true';
             }
 
-            const baseUrl = `https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params}`;
-
-            // CORSプロキシのリスト（信頼性の高い順）
-            const proxyUrls = [
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(baseUrl)}`,
-                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(baseUrl)}`,
-            ];
-
-            for (const url of proxyUrls) {
-                try {
-                    console.log('Trying proxy:', url);
-                    const controller = new AbortController();
-                    const timer = setTimeout(() => controller.abort(), 10000); // 10秒に延長
-
-                    const res = await fetch(url, { signal: controller.signal });
-                    clearTimeout(timer);
-
-                    if (!res.ok) {
-                        console.warn(`Proxy ${url} returned status ${res.status}`);
-                        continue;
-                    }
-
-                    const data = await res.json();
-                    if (data.results && data.results.shop && data.results.shop.length > 0) {
-                        return data.results.shop.map(s => ({
-                            name: s.name,
-                            catch: s.catch || '',
-                            genre: s.genre ? s.genre.name : '',
-                            genreCode: s.genre ? s.genre.code : '',
-                            photo: s.photo && s.photo.pc ? s.photo.pc.l : '',
-                            url: s.urls ? s.urls.pc : '',
-                            budget: s.budget ? s.budget.name : '',
-                            open: s.open || '',
-                            close: s.close || '',
-                        }));
-                    }
-                } catch (e) {
-                    console.warn('API proxy failed:', url, e.message);
-                    continue;
+            try {
+                const response = await fetch(`/api/shops?${params}`);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
                 }
+                const data = await response.json();
+
+                if (data.results && data.results.shop && data.results.shop.length > 0) {
+                    return data.results.shop.map(s => ({
+                        name: s.name,
+                        catch: s.catch || '',
+                        genre: s.genre ? s.genre.name : '',
+                        genreCode: s.genre ? s.genre.code : '',
+                        photo: s.photo && s.photo.pc ? s.photo.pc.l : '',
+                        url: s.urls ? s.urls.pc : '',
+                        budget: s.budget ? s.budget.name : '',
+                        open: s.open || '',
+                        close: s.close || '',
+                    }));
+                }
+                return [];
+            } catch (e) {
+                console.error('Fetch shops error:', e);
+                throw e;
             }
-            throw new Error('All API proxy attempts failed. Please try again later.');
         }
 
         // =====================================================================
