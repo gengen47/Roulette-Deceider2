@@ -568,6 +568,11 @@
             try {
                 let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal, openNowChecked);
 
+                // ジャンル除外フィルター（API側で漏れるサブジャンル登録の店舗を除外）
+                if (excludedGenres.size > 0) {
+                    shops = shops.filter(s => !excludedGenres.has(s.genreCode));
+                }
+
                 // 営業中フィルター（クライアント側テキスト解析）
                 if (openNowChecked) {
                     const filtered = shops.filter(s => isOpenNow(s));
