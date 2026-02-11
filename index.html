@@ -604,12 +604,7 @@
                 statusBar.textContent = `📍 周辺 ${shops.length} 店舗からランダム${pickCount}店舗を選出`;
             } catch (e) {
                 console.error(e);
-                if (choices.filter(c => c.type === 'shop').length === 0) {
-                    statusBar.textContent = '⚠️ 該当店舗なし。条件を緩めてみてください。';
-                    loadShops(MOCK_SHOPS);
-                    renderChoicesUI();
-                    drawRoulette();
-                }
+                statusBar.textContent = '⚠️ 店舗の検索に失敗しました。条件を変えて再検索してください。';
             }
             btnStart.disabled = false;
         }
