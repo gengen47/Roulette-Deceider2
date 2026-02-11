@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>メシガチャ - 運命のゴハン、回して決めよう！</title>
+    <title>グルキメ！ - 運命のゴハン、回して決めよう！</title>
     <meta name="description" content="何食べる？で悩んだらルーレットで即決！周辺の飲食店から運命の一食を決めよう。" />
 
     <!-- ===== LinkSwitch プレースホルダー（バリューコマース収益化用） ===== -->
@@ -297,16 +297,12 @@
     <header class="px-4 pt-4 pb-2 flex flex-col items-center justify-center sticky top-0 z-50"
         style="background:#FAFAFA;">
         <img src="logo.svg" alt="メシガチャ" style="height:44px; object-fit:contain;" />
-        <p class="text-xs text-gray-400 mt-1">周辺の飲食店から運命の一食を決めよう。</p>
+        <p class="text-xs text-gray-500 mt-1">運命のゴハン、回して決めよう！</p>
     </header>
 
     <!-- ===== メインコンテンツ ===== -->
     <main class="flex-1 flex flex-col items-center px-4 pb-8">
 
-        <!-- ステータス -->
-        <div id="status-bar" class="w-full max-w-md mt-4 mb-2 text-center text-sm text-gray-500 fade-in">
-            📍 位置情報を取得しています…
-        </div>
 
         <!-- ===== フィルターパネル ===== -->
         <section class="w-full max-w-md mt-2 mb-3 filter-panel bg-white shadow-sm fade-in">
@@ -353,6 +349,11 @@
                 <button id="btn-research" class="btn-search w-full">🔄 この条件で再検索</button>
             </div>
         </section>
+
+        <!-- ステータス -->
+        <div id="status-bar" class="w-full max-w-md mb-2 text-center text-sm text-gray-500 fade-in">
+            📍 位置情報を取得しています…
+        </div>
 
         <!-- ルーレット -->
         <section id="roulette-container" class="my-4">
