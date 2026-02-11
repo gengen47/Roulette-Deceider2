@@ -710,6 +710,20 @@
         }
 
         // =====================================================================
+        // 日本の祝日（2025-2026）
+        const HOLIDAYS = [
+            '2025-01-01', '2025-01-13', '2025-02-11', '2025-02-23', '2025-02-24', '2025-03-20', '2025-04-29', '2025-05-03', '2025-05-04', '2025-05-05', '2025-05-06', '2025-07-21', '2025-08-11', '2025-09-15', '2025-09-23', '2025-10-13', '2025-11-03', '2025-11-23', '2025-11-24',
+            '2026-01-01', '2026-01-12', '2026-02-11', '2026-02-23', '2026-03-20', '2026-04-29', '2026-05-03', '2026-05-04', '2026-05-05', '2026-05-06', '2026-07-20', '2026-08-11', '2026-09-21', '2026-09-23', '2026-10-12', '2026-11-03', '2026-11-23',
+        ];
+
+        function isJapaneseHoliday(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return HOLIDAYS.includes(`${y}-${m}-${d}`);
+        }
+
+        // =====================================================================
         //  営業中判定（第2層: 定休日 + 第3層: テキスト解析）
         // =====================================================================
         function isOpenNow(shop) {
@@ -717,21 +731,39 @@
 
             const now = new Date();
             const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
-            const today = dayNames[now.getDay()];
+            const todayDay = dayNames[now.getDay()];
+            const isHoliday = isJapaneseHoliday(now);
             const nowMin = now.getHours() * 60 + now.getMinutes();
 
-            // 第2層: 定休日チェック
+            // 祝日の場合の曜日扱い：
+            // まず「祝」または「祝日」を含むブロックを探し、あればその時間を採用する。
+            // なければ、通常の曜日（水曜日なら「水」）として振る舞う。
+
+            // 定休日チェック（簡易）
+            // ※「祝日は営業」などの例外があるため、close文字列に「祝」が含まれない限り、
+            //   祝日は一旦定休日チェックをスルーしてopenテキスト解析に任せる戦略をとる。
             if (shop.close && shop.close !== 'なし') {
-                if (shop.close.includes(today)) return false;
+                // 祝日なら、closeに「祝」が含まれていなければセーフ
+                if (isHoliday) {
+                    if (shop.close.includes('祝') || shop.close.includes('祝日')) return false;
+                } else {
+                    // 平日なら通常通り
+                    if (shop.close.includes(todayDay)) return false;
+                }
             }
 
             // 第3層: 営業時間テキスト解析
-            // 曜日ブロックに分割して、今日に該当するブロックを特定
-            const text = shop.open;
-            const todayBlock = extractTodayBlock(text, today);
+            // 優先度: 祝日(もし今日が祝日なら) > 通常曜日
+            let todayBlock = null;
+            if (isHoliday) {
+                todayBlock = extractTodayBlock(shop.open, '祝');
+            }
+            if (!todayBlock) {
+                todayBlock = extractTodayBlock(shop.open, todayDay);
+            }
 
             // 今日のブロックから時間パターンを抽出
-            const targetText = todayBlock || text; // ブロック特定できなければ全体
+            const targetText = todayBlock || shop.open; // ブロック特定できなければ全体
             const timePattern = /(\d{1,2}):(\d{2})\s*[～〜~]\s*(?:翌)?\s*(\d{1,2}):(\d{2})/g;
             let match;
             let hasTimeData = false;
@@ -756,13 +788,14 @@
 
         // 曜日ブロック抽出: "月～金: 11:00～14:00 ... 土: 18:00～22:00" → 今日のブロックを返す
         function extractTodayBlock(text, today) {
-            // 曜日範囲パターン: "月～金" "火～土" "月～日" など
-            const dayOrder = '月火水木金土日';
+            // 曜日範囲パターン: "月～金" "火～土" "月～日" など + "祝"対応
+            const dayOrder = '月火水木金土日祝'; // 祝を追加
             const todayIdx = dayOrder.indexOf(today);
-            if (todayIdx === -1) return null;
+            if (todayIdx === -1) return null; // "祝"以外の不明な文字
 
             // テキストを曜日ブロックに分割（「月～金、祝前日:」のようなパターンで区切る）
-            const blockPattern = /([月火水木金土日](?:[～〜~][月火水木金土日])?(?:[、,][月火水木金土日](?:[～〜~][月火水木金土日])?)*(?:[、,](?:祝日|祝前日))*)\s*[:：]/g;
+            // "祝"や"祝日"もキャプチャするため、正規表現を拡張
+            const blockPattern = /([月火水木金土日祝](?:[～〜~][月火水木金土日祝])?(?:[、,][月火水木金土日祝](?:[～〜~][月火水木金土日祝])?)*(?:[、,](?:祝日|祝前日))*)\s*[:：]/g;
             let blockMatch;
             let bestBlock = null;
 
@@ -784,18 +817,25 @@
 
         // 曜日指定に今日が含まれるか判定
         function isDayInSpec(spec, today, dayOrder) {
+            // "祝日" という文字列が含まれていて、todayが "祝" ならヒット
+            if (today === '祝' && (spec.includes('祝日') || spec.includes('祝'))) return true;
+
             const todayIdx = dayOrder.indexOf(today);
+            if (todayIdx === -1) return false;
+
             // 範囲指定: "月～金"
             const rangePattern = /([月火水木金土日])[～〜~]([月火水木金土日])/g;
             let rm;
             while ((rm = rangePattern.exec(spec)) !== null) {
                 const startIdx = dayOrder.indexOf(rm[1]);
                 const endIdx = dayOrder.indexOf(rm[2]);
-                if (startIdx <= endIdx) {
-                    if (todayIdx >= startIdx && todayIdx <= endIdx) return true;
-                } else {
-                    // 土～月 のような跨ぎ
-                    if (todayIdx >= startIdx || todayIdx <= endIdx) return true;
+                if (startIdx !== -1 && endIdx !== -1) {
+                    if (startIdx <= endIdx) {
+                        if (todayIdx >= startIdx && todayIdx <= endIdx) return true;
+                    } else {
+                        // 土～月 のような跨ぎ
+                        if (todayIdx >= startIdx || todayIdx <= endIdx) return true;
+                    }
                 }
             }
             // 個別指定: "土" "日"
