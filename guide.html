@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y5P8DCKR9V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-Y5P8DCKR9V');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>使い方ガイド | グルキメ！</title>
+    <meta name="description" content="グルキメ！の使い方を解説。位置情報を許可して、ルーレットを回すだけで運命の一食が決まります。" />
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#FFAB40" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAFA;
+            color: #333;
+            line-height: 1.8;
+        }
+
+        header {
+            background: #FAFAFA;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        header img {
+            height: 40px;
+        }
+
+        header p {
+            font-size: .75rem;
+            color: #999;
+            margin-top: .25rem;
+        }
+
+        main {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 2rem 1.25rem 4rem;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: .5rem;
+            padding-bottom: .75rem;
+            border-bottom: 3px solid #FFAB40;
+        }
+
+        .lead {
+            font-size: .95rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .step {
+            background: #fff;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+            position: relative;
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            background: linear-gradient(135deg, #FFAB40, #FF8F00);
+            color: #fff;
+            font-weight: 800;
+            font-size: .9rem;
+            border-radius: 50%;
+            margin-bottom: .75rem;
+        }
+
+        .step h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: .5rem;
+        }
+
+        .step p {
+            font-size: .9rem;
+            color: #555;
+            margin-bottom: .5rem;
+        }
+
+        .step .emoji {
+            font-size: 2rem;
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+        }
+
+        .tip {
+            background: #FFF8E1;
+            border-left: 4px solid #FFAB40;
+            border-radius: .5rem;
+            padding: 1rem 1.25rem;
+            margin-top: .75rem;
+            font-size: .85rem;
+            color: #666;
+        }
+
+        .tip strong {
+            color: #FF8F00;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: .75rem;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .feature-card {
+            background: #fff;
+            border-radius: .75rem;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+        }
+
+        .feature-card .icon {
+            font-size: 1.75rem;
+            margin-bottom: .5rem;
+        }
+
+        .feature-card h3 {
+            font-size: .85rem;
+            font-weight: 700;
+            color: #1a1a2e;
+            margin-bottom: .25rem;
+        }
+
+        .feature-card p {
+            font-size: .75rem;
+            color: #888;
+        }
+
+        a {
+            color: #FFAB40;
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            padding: .75rem 2rem;
+            background: linear-gradient(135deg, #FFAB40, #FF8F00);
+            color: #fff;
+            font-weight: 700;
+            border-radius: 9999px;
+            text-decoration: none;
+            font-size: .9rem;
+            box-shadow: 0 4px 12px rgba(255, 171, 64, .4);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .back-link:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(255, 171, 64, .5);
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: .7rem;
+            color: #aaa;
+        }
+
+        footer a {
+            color: #aaa;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <a href="/"><img src="logo.svg" alt="グルキメ！" /></a>
+        <p>運命のゴハン、回して決めよう！</p>
+    </header>
+
+    <main>
+        <h1>📖 使い方ガイド</h1>
+        <p class="lead">グルキメ！はたった3ステップで今日のゴハンが決まります。迷う時間はもう終わり！</p>
+
+        <!-- ステップ1 -->
+        <div class="step">
+            <span class="emoji">📍</span>
+            <div class="step-number">1</div>
+            <h2>位置情報を許可する</h2>
+            <p>サイトにアクセスすると、ブラウザが位置情報の許可を求めます。<strong>「許可」</strong>をタップしてください。</p>
+            <p>現在地をもとに、周辺の飲食店を自動で検索します。</p>
+            <div class="tip">
+                <strong>💡 ヒント：</strong>位置情報がうまく取得できない場合は、ブラウザの設定から位置情報を許可してページをリロードしてください。
+            </div>
+        </div>
+
+        <!-- ステップ2 -->
+        <div class="step">
+            <span class="emoji">🔍</span>
+            <div class="step-number">2</div>
+            <h2>フィルターで絞り込む（任意）</h2>
+            <p>「🔍 店舗フィルター」をタップすると、以下の条件で絞り込めます。</p>
+            <ul style="padding-left:1.25rem; font-size:.9rem; color:#555; margin-top:.5rem;">
+                <li><strong>ジャンル除外</strong> — 今日は焼肉の気分じゃない…そんな時に</li>
+                <li><strong>距離</strong> — 300m〜3kmの範囲を選択</li>
+                <li><strong>予算帯</strong> — お財布と相談</li>
+                <li><strong>営業中のみ</strong> — 今開いてるお店だけ表示</li>
+            </ul>
+            <p style="margin-top:.5rem;">設定したら「🔄 この条件で再検索」をタップ！</p>
+        </div>
+
+        <!-- ステップ3 -->
+        <div class="step">
+            <span class="emoji">🎰</span>
+            <div class="step-number">3</div>
+            <h2>STARTでルーレットを回す！</h2>
+            <p>オレンジ色の<strong>「START」ボタン</strong>を押すと、ルーレットが回転！</p>
+            <p>運命の矢印が止まったところが、あなたの今日のゴハンです。</p>
+            <div class="tip">
+                <strong>💡 ヒント：</strong>各選択肢のスライダーで確率を調整できます。お気に入りのお店の確率を上げてみましょう！
+            </div>
+        </div>
+
+        <!-- ステップ4 -->
+        <div class="step">
+            <span class="emoji">🔥</span>
+            <div class="step-number">4</div>
+            <h2>結果を見て予約・検索！</h2>
+            <p>結果が表示されたら、そのまま<strong>ホットペッパーで予約</strong>したり、Google検索したりできます。</p>
+            <p>納得いかない？「🔄 もう一度回す」でリトライもOK！</p>
+        </div>
+
+        <!-- 特徴 -->
+        <h2 style="font-size:1.2rem; font-weight:700; color:#1a1a2e; margin-top:2.5rem; margin-bottom:.5rem;">✨ グルキメ！の特徴
+        </h2>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="icon">⚡</div>
+                <h3>3秒で決まる</h3>
+                <p>もう「何食べる？」で悩まない</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">📍</div>
+                <h3>周辺のお店</h3>
+                <p>今いる場所の近くから自動検索</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🎯</div>
+                <h3>確率カスタム</h3>
+                <p>好みに合わせて確率を調整</p>
+            </div>
+            <div class="feature-card">
+                <div class="icon">🆓</div>
+                <h3>完全無料</h3>
+                <p>登録不要・インストール不要</p>
+            </div>
+        </div>
+
+        <div style="text-align:center;">
+            <a href="/" class="back-link">🎰 さっそく使ってみる！</a>
+        </div>
+    </main>
+
+    <footer>
+        <a href="http://webservice.recruit.co.jp/" target="_blank" rel="noopener">
+            <img src="https://webservice.recruit.co.jp/banner/hotpepper-s.gif" alt="Powered by ホットペッパー Webサービス"
+                style="height:14px; vertical-align:middle;" />
+        </a>
+        <p style="margin-top:.25rem;">Powered by <a href="http://webservice.recruit.co.jp/" target="_blank"
+                rel="noopener">ホットペッパー Webサービス</a></p>
+        <p style="margin-top:.25rem;"><a href="/privacy.html">プライバシーポリシー</a></p>
+    </footer>
+</body>
+
+</html>
