@@ -15,6 +15,14 @@
     <title>グルキメ！ - 運命のゴハン、回して決めよう！</title>
     <meta name="description" content="何食べる？で悩んだらルーレットで即決！周辺の飲食店から運命の一食を決めよう。" />
 
+    <!-- ===== PWA ===== -->
+    <link rel="manifest" href="/manifest.json" />
+    <meta name="theme-color" content="#FFAB40" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="グルキメ！" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
     <!-- ===== LinkSwitch プレースホルダー（バリューコマース収益化用） ===== -->
     <!-- <script type="text/javascript" src="//tag.valuecommerce.com/linkswitch.js"></script> -->
 
@@ -1195,5 +1203,12 @@
         init();
     </script>
 </body>
+
+<script>
+    // Service Worker 登録
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => { });
+    }
+</script>
 
 </html>
