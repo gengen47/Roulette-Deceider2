@@ -353,6 +353,22 @@
                     <option value="5">3km以内</option>
                 </select>
 
+                <!-- ランチ/ディナー切り替え -->
+                <div class="flex bg-gray-100 p-1 rounded-lg mb-4">
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="time-mode" value="lunch" class="hidden peer">
+                        <span
+                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞
+                            ランチ</span>
+                    </label>
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="time-mode" value="dinner" class="hidden peer" checked>
+                        <span
+                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙
+                            ディナー</span>
+                    </label>
+                </div>
+
                 <!-- 予算帯 -->
                 <p class="text-xs text-gray-400 font-semibold mb-2">💰 予算帯</p>
                 <div class="flex gap-2 mb-4">
@@ -612,11 +628,23 @@
                 .filter(g => !excludedGenres.has(g.code))
                 .map(g => g.code);
 
+            // ランチモード判定
+            const isLunchMode = document.querySelector('input[name="time-mode"]:checked').value === 'lunch';
+            let strictMaxPrice = 999999; // クライアントフィルタ用
+
             // 予算コードの範囲をリストで取得（金額ベース）
             let budgetCodes = [];
             if (budgetMin || budgetMax) {
                 const minPrice = budgetMin ? parseInt(budgetMin) : 0;
-                const maxPrice = budgetMax ? parseInt(budgetMax) : 999999;
+                let maxPrice = budgetMax ? parseInt(budgetMax) : 999999;
+
+                strictMaxPrice = maxPrice; // ユーザー指定の上限を保持
+
+                // ランチの場合は、取りこぼし防止のために上限を+1500円緩める
+                // (APIはディナー予算で検索するため)
+                if (isLunchMode && budgetMax) {
+                    maxPrice += 1500;
+                }
 
                 budgetCodes = BUDGETS.filter(b => {
                     // 予算帯の中央値などを考慮するのも手だが、今回は
@@ -641,6 +669,28 @@
 
             try {
                 let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal, openNowChecked);
+
+                // ランチ予算での厳密なフィルタリング
+                if (isLunchMode && budgetMax) {
+                    shops = shops.filter(s => {
+                        // 平均予算テキストからランチ価格を推測
+                        // 例: "ランチ900円", "ランチ:1500円", "昼:1000円～"
+                        const text = s.budgetAverage;
+                        if (!text) return true; // 情報なしは通す（緩い判断）
+
+                        // "ランチ" or "昼" の後に続く数字を探す
+                        // 金額にはカンマが含まれることがある (\d{1,3}(?:,\d{3})*)
+                        const match = text.match(/(?:ランチ|昼|Lunch).*?(\d{1,3}(?:,\d{3})*)/);
+                        if (match) {
+                            const price = parseInt(match[1].replace(/,/g, ''));
+                            // ランチ価格が見つかった場合、それがユーザー指定の上限以下か判定
+                            return price <= strictMaxPrice;
+                        }
+
+                        // ランチ価格が見つからない場合も通す（API検索時のフィルタを信頼）
+                        return true;
+                    });
+                }
 
                 // ジャンル除外フィルター（API側で漏れるサブジャンル登録の店舗を除外）
                 if (excludedGenres.size > 0) {
@@ -715,6 +765,7 @@
                         photo: s.photo && s.photo.pc ? s.photo.pc.l : '',
                         url: s.urls ? s.urls.pc : '',
                         budget: s.budget ? s.budget.name : '',
+                        budgetAverage: s.budget ? s.budget.average : '', // クライアント側解析用
                         open: s.open || '',
                         close: s.close || '',
                     }));
