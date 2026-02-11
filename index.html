@@ -1036,6 +1036,26 @@
         }
 
         // =====================================================================
+        //  UI操作制御（ルーレット回転中の操作ブロック）
+        // =====================================================================
+        function updateControlsState(disabled) {
+            // フィルター部と選択肢リストの操作を無効化
+            const filterBody = document.getElementById('filter-body');
+            const choicesList = document.getElementById('choices-list');
+            const customArea = document.getElementById('custom-input').parentElement; // カスタム入力エリア
+
+            if (disabled) {
+                filterBody.classList.add('opacity-50', 'pointer-events-none');
+                choicesList.classList.add('opacity-50', 'pointer-events-none');
+                customArea.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                filterBody.classList.remove('opacity-50', 'pointer-events-none');
+                choicesList.classList.remove('opacity-50', 'pointer-events-none');
+                customArea.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        // =====================================================================
         //  UI: 選択肢リスト描画
         // =====================================================================
         function renderChoicesUI() {
@@ -1218,6 +1238,7 @@
 
             spinning = true;
             btnStart.disabled = true;
+            updateControlsState(true); // 操作無効化
 
             // 重み付き抽選 → 当選インデックス決定
             const total = enabled.reduce((s, c) => s + c.weight, 0);
@@ -1259,6 +1280,7 @@
                 } else {
                     spinning = false;
                     btnStart.disabled = false;
+                    updateControlsState(false); // 操作有効化
                     showResult(enabled[winnerIdx]);
                 }
             }
