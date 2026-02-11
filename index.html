@@ -513,20 +513,22 @@
         ];
 
         // 予算マスタ（安い順）
+        // 予算マスタ（安い順）
+        // ※値はフィルタリング用に数値を持たせる
         const BUDGETS = [
-            { code: 'B009', name: '〜500円' },
-            { code: 'B010', name: '501〜1000円' },
-            { code: 'B011', name: '1001〜1500円' },
-            { code: 'B001', name: '1501〜2000円' },
-            { code: 'B002', name: '2001〜3000円' },
-            { code: 'B003', name: '3001〜4000円' },
-            { code: 'B008', name: '4001〜5000円' },
-            { code: 'B004', name: '5001〜7000円' },
-            { code: 'B005', name: '7001〜10000円' },
-            { code: 'B006', name: '10001〜15000円' },
-            { code: 'B012', name: '15001〜20000円' },
-            { code: 'B013', name: '20001〜30000円' },
-            { code: 'B014', name: '30001円〜' },
+            { code: 'B009', name: '〜500円', min: 0, max: 500 },
+            { code: 'B010', name: '501〜1000円', min: 501, max: 1000 },
+            { code: 'B011', name: '1001〜1500円', min: 1001, max: 1500 },
+            { code: 'B001', name: '1501〜2000円', min: 1501, max: 2000 },
+            { code: 'B002', name: '2001〜3000円', min: 2001, max: 3000 },
+            { code: 'B003', name: '3001〜4000円', min: 3001, max: 4000 },
+            { code: 'B008', name: '4001〜5000円', min: 4001, max: 5000 },
+            { code: 'B004', name: '5001〜7000円', min: 5001, max: 7000 },
+            { code: 'B005', name: '7001〜10000円', min: 7001, max: 10000 },
+            { code: 'B006', name: '10001〜15000円', min: 10001, max: 15000 },
+            { code: 'B012', name: '15001〜20000円', min: 15001, max: 20000 },
+            { code: 'B013', name: '20001〜30000円', min: 20001, max: 30000 },
+            { code: 'B014', name: '30001円〜', min: 30001, max: 999999 },
         ];
 
         // フィルター状態
@@ -610,12 +612,27 @@
                 .filter(g => !excludedGenres.has(g.code))
                 .map(g => g.code);
 
-            // 予算コードの範囲をリストで取得
+            // 予算コードの範囲をリストで取得（金額ベース）
             let budgetCodes = [];
             if (budgetMin || budgetMax) {
-                const minIdx = budgetMin ? BUDGETS.findIndex(b => b.code === budgetMin) : 0;
-                const maxIdx = budgetMax ? BUDGETS.findIndex(b => b.code === budgetMax) : BUDGETS.length - 1;
-                budgetCodes = BUDGETS.slice(minIdx, maxIdx + 1).map(b => b.code);
+                const minPrice = budgetMin ? parseInt(budgetMin) : 0;
+                const maxPrice = budgetMax ? parseInt(budgetMax) : 999999;
+
+                budgetCodes = BUDGETS.filter(b => {
+                    // 予算帯の中央値などを考慮するのも手だが、今回は
+                    // 「予算帯のレンジが、指定されたレンジと少しでも被ればOK」あるいは
+                    // 「予算帯が指定レンジに完全に収まる」など考え方はある。
+                    // ここではシンプルに「指定価格帯に含まれる予算コード」を選択する。
+                    // 例: 2000円〜4000円 指定
+                    // -> 1501~2000 (一部被り) -> 含める？
+                    // -> 2001~3000 (完全) -> 含める
+                    // -> 3001~4000 (完全) -> 含める
+                    // -> 4001~5000 (一部被り) -> 含めない？
+
+                    // ホットペッパーの仕様上、予算コードは「平均予算」に近い概念。
+                    // なので、「その予算帯のmin/maxが、指定レンジと被っているか」で判定する。
+                    return (b.min <= maxPrice && b.max >= minPrice);
+                }).map(b => b.code);
             }
 
             const rangeVal = document.getElementById('distance-range').value;
@@ -872,10 +889,26 @@
                 chipsContainer.appendChild(chip);
             });
 
-            // 予算セレクト生成
-            BUDGETS.forEach(b => {
-                const opt1 = new Option(b.name, b.code);
-                const opt2 = new Option(b.name, b.code);
+            // 予算セレクト生成（金額ベース）
+            // 選択肢: 500, 1000, 2000, 3000, 5000, 10000, 15000, 30000
+            const priceOptions = [
+                { val: '', label: '指定なし' },
+                { val: '500', label: '500円' },
+                { val: '1000', label: '1000円' },
+                { val: '2000', label: '2000円' },
+                { val: '3000', label: '3000円' },
+                { val: '4000', label: '4000円' },
+                { val: '5000', label: '5000円' },
+                { val: '7000', label: '7000円' },
+                { val: '10000', label: '10000円' },
+                { val: '15000', label: '15000円' },
+                { val: '20000', label: '20000円' },
+                { val: '30000', label: '30000円' },
+            ];
+
+            priceOptions.forEach(opt => {
+                const opt1 = new Option(opt.label, opt.val);
+                const opt2 = new Option(opt.label, opt.val);
                 budgetMinSel.appendChild(opt1);
                 budgetMaxSel.appendChild(opt2);
             });
