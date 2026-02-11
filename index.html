@@ -537,8 +537,7 @@
                 }
             } catch (e) {
                 console.error(e);
-                statusBar.textContent = '⚠️ 位置情報 / API取得に失敗。モックデータで動作します。';
-                loadShops(MOCK_SHOPS);
+                statusBar.textContent = '⚠️ 位置情報の取得に失敗しました。ブラウザの位置情報を許可してリロードしてください。';
             }
 
             // デフォルトカスタム選択肢
