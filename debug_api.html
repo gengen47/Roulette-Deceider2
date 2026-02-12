@@ -15,7 +15,11 @@
         async function runTest() {
             try {
                 const params = new URLSearchParams({
-                    id: 'J003942040' // ぐっさん家 ID
+                    lat: 34.7915, // Gyukaku Senrioka Lat
+                    lng: 135.5496, // Gyukaku Senrioka Lng
+                    range: 3,
+                    count: 10,
+                    keyword: 'ぐっさん家' // Specific shop search
                 });
 
                 document.getElementById('status').innerText = 'Fetching /api/shops...';
