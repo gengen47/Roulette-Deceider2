@@ -912,6 +912,19 @@
         //  フィルターUI初期化
         // =====================================================================
         function initFilterUI() {
+            // 時間帯によるランチ/ディナー自動選択
+            // 04:00 〜 15:59 -> ランチ
+            // 16:00 〜 03:59 -> ディナー
+            const now = new Date();
+            const hour = now.getHours();
+            const isLunchTime = (hour >= 4 && hour < 16);
+
+            if (isLunchTime) {
+                document.querySelector('input[name="time-mode"][value="lunch"]').checked = true;
+            } else {
+                document.querySelector('input[name="time-mode"][value="dinner"]').checked = true;
+            }
+
             const chipsContainer = document.getElementById('genre-chips');
             const budgetMinSel = document.getElementById('budget-min');
             const budgetMaxSel = document.getElementById('budget-max');
