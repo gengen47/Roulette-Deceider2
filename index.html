@@ -671,7 +671,8 @@
                             }
 
                             // 救済ロジック: 「ランチあり」だが価格不明な場合、ディナー予算から推定する
-                            if (text.includes('あり')) {
+                            // 誤爆防止: "～あり" のような文中の記述は除外するため、先頭一致のみを対象とする
+                            if (text.startsWith('あり')) {
                                 // ディナー予算情報を取得
                                 let budgetText = s.budget;
                                 if ((!budgetText || budgetText === '') && s.budgetAverage) {
