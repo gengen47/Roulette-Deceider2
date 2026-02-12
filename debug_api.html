@@ -15,11 +15,10 @@
         async function runTest() {
             try {
                 const params = new URLSearchParams({
-                    lat: 34.79178,  // Placeholder lat
-                    lng: 135.5487, // Placeholder lng
-                    id: 'J004509478', // Reported non-lunch shop
-                    range: 3,
+                    keyword: 'ハッピースマイル和', // Correct store name
+                    large_service_area: 'SS20', // Kansai area
                     count: 10
+                    // lat/lng/range removed
                 });
 
                 document.getElementById('status').innerText = 'Fetching /api/shops...';
