@@ -1,0 +1,916 @@
+Vercel API Test
+
+Success! 10 shops found.
+{
+"results": {
+"api_version": "1.30",
+"results_available": 46,
+"results_returned": "10",
+"results_start": 1,
+"shop": [
+{
+"id": "J000450418",
+"name": "くし若まる 千里丘店",
+"logo_image": "https://imgfp.hotp.jp/IMGH/55/00/P029055500/P029055500_69.jpg",
+"name_kana": "くしわかまる　せんりおかてん",
+"address": "大阪府摂津市千里丘１-10-15",
+"station_name": "千里丘",
+"ktai_coupon": 1,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7914452218,
+"lng": 135.5491795456,
+"genre": {
+"name": "居酒屋",
+"catch": "生ビール319円(税込)！！串カツ鉄板居酒屋",
+"code": "G001"
+},
+"budget": {
+"code": "B002",
+"name": "2001～3000円",
+"average": "2000円～2500円"
+},
+"catch": "≪大好評≫単品飲み放題！ 豊富な料理！単品99円～",
+"capacity": 54,
+"access": "ＪＲ千里丘駅の西口を出て、徒歩3分",
+"mobile_access": "JR千里丘駅の西口を出て､徒歩3分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ000450418/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/97/60/P040209760/P040209760_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/97/60/P040209760/P040209760_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/97/60/P040209760/P040209760_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/97/60/P040209760/P040209760_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/97/60/P040209760/P040209760_100.jpg"
+}
+},
+"open": "月～金、祝前日: 17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:30）土、日、祝日: 16:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:30）",
+"close": "なし",
+"party_capacity": 50,
+"other_memo": "※不明点等、お気軽に店舗へご相談下さい",
+"shop_detail_memo": "不明点等、お気軽に店舗へご相談下さい",
+"budget_memo": "QR決済・電子マネーもご利用可能です。つきだし319円(税込)",
+"wedding": "お気軽に店舗までお問い合わせ下さい",
+"course": "あり",
+"free_drink": "あり ：飲み放題ご用意しております。",
+"free_food": "なし ：当店ではご用意がございません。申し訳ございません。要望があれば可能な限り対応させていただきます。",
+"private_room": "なし ：当店ではご用意がございません。申し訳ございません。",
+"horigotatsu": "なし ：当店ではご用意がございません。申し訳ございません。",
+"tatami": "あり ：ゆったりとお寛ぎください。",
+"card": "利用可",
+"non_smoking": "全面禁煙",
+"charter": "貸切不可 ：店舗の貸切等、詳細はお気軽に店舗までご相談ください♪",
+"parking": "なし ：有料P代店負担あり※店舗にご確認ください。",
+"barrier_free": "なし ：スタッフ一同全力でサポートさせていただきます。",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "なし",
+"midnight": "営業していない",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れOK ：お子様連れも歓迎致します♪ご家族でもゆったりお食事可能です！",
+"wifi": "なし",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ000450418/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ000450418/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J001229464",
+"name": "旬彩 白おじ",
+"logo_image": "https://imgfp.hotp.jp/IMGH/24/74/P038362474/P038362474_69.jpg",
+"name_kana": "しゅんさいしろおじ",
+"address": "大阪府摂津市千里丘１丁目５番９号",
+"station_name": "千里丘",
+"ktai_coupon": 1,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELU",
+"name": "摂津"
+},
+"lat": 34.7919549091,
+"lng": 135.5501688858,
+"genre": {
+"name": "居酒屋",
+"catch": "旬の鮮魚・野菜・お肉とお酒とともに・",
+"code": "G001"
+},
+"budget": {
+"code": "B003",
+"name": "3001～4000円",
+"average": ""
+},
+"catch": "",
+"capacity": 35,
+"access": "ＪＲ京都線 千里丘駅 西口 徒歩2分 ",
+"mobile_access": "JR京都線 千里丘駅 西口 徒歩2分 ",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ001229464/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/73/51/P038357351/P038357351_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/73/51/P038357351/P038357351_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/73/51/P038357351/P038357351_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/73/51/P038357351/P038357351_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/73/51/P038357351/P038357351_100.jpg"
+}
+},
+"open": "火～日、祝日、祝前日: 17:00～23:30",
+"close": "月",
+"party_capacity": "",
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "",
+"wedding": "",
+"free_drink": "あり",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "全面禁煙",
+"charter": "貸切不可",
+"parking": "なし",
+"barrier_free": "なし",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "なし",
+"midnight": "営業している",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れ不可",
+"wifi": "あり",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ001229464/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ001229464/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J001195256",
+"name": "Vege Kitchen Awajin",
+"logo_image": "https://imgfp.hotp.jp/IMGH/27/37/P035702737/P035702737_69.jpg",
+"name_kana": "べじきっちん　あわじん",
+"address": "大阪府摂津市千里丘１－12－31",
+"station_name": "千里丘",
+"ktai_coupon": 0,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7917110146,
+"lng": 135.5487392973,
+"genre": {
+"name": "洋食",
+"catch": "ラクレットやチーズフォンデュと各国ワイン",
+"code": "G005"
+},
+"budget": {
+"code": "B004",
+"name": "5001～7000円",
+"average": "6000円前後"
+},
+"catch": "こだわり農家の新鮮野菜 店内にワインセラ―完備",
+"capacity": 28,
+"access": "ＪＲ京都線 千里丘駅 西口 徒歩2分 阪急京都線 摂津市駅 徒歩10分 パナソニックスタジアムからも徒歩25分",
+"mobile_access": "JR千里丘駅 西口 徒歩2分/阪急摂津市駅 徒歩10分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ001195256/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/49/59/P029774959/P029774959_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/49/59/P029774959/P029774959_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/49/59/P029774959/P029774959_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/49/59/P029774959/P029774959_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/49/59/P029774959/P029774959_100.jpg"
+}
+},
+"open": "月、木～日: 11:30～14:00 （料理L.O. 13:30 ドリンクL.O. 13:30）17:30～22:00 （料理L.O. 21:30 ドリンクL.O. 21:30）水: 11:30～14:0017:30～22:00 （料理L.O. 21:30 ドリンクL.O. 21:30）",
+"close": "火",
+"party_capacity": 40,
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "",
+"wedding": "",
+"course": "あり",
+"free_drink": "あり ：コース注文時のみ利用可",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "全面禁煙",
+"charter": "貸切可 ：24名様～",
+"parking": "なし ：近隣にコインパーキングあります。",
+"barrier_free": "なし ：入口に段差が二段あります。",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "あり",
+"midnight": "営業していない",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れOK ：※ベビーカー利用不可・お子様椅子もありません。小さなお子様は保護者でしっかり管理できるお客様のみ可。",
+"wifi": "未確認",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ001195256/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ001195256/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J001231594",
+"name": "うの屋 千里丘駅前店",
+"logo_image": "https://imgfp.hotp.jp/IMGH/85/63/P041968563/P041968563_69.jpg",
+"name_kana": "うのや　せんりおかえきまえてん",
+"address": "大阪府摂津市千里丘１-13-27",
+"station_name": "千里丘",
+"ktai_coupon": 0,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7922718084,
+"lng": 135.5497800201,
+"genre": {
+"name": "居酒屋",
+"catch": ".",
+"code": "G001"
+},
+"budget": {
+"code": "B003",
+"name": "3001～4000円",
+"average": "3000円～4000円"
+},
+"catch": "店長おすすめ10本セット 地鶏造り盛り合わせ",
+"capacity": 42,
+"access": "ＪＲ東海道本線千里丘駅西口より徒歩約3分/阪急京都本線摂津市駅出口より徒歩約19分",
+"mobile_access": "JR千里丘駅徒歩3分/阪急摂津市駅出口徒歩19分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ001231594/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/48/04/P048364804/P048364804_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/48/04/P048364804/P048364804_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/48/04/P048364804/P048364804_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/48/04/P048364804/P048364804_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/48/04/P048364804/P048364804_100.jpg"
+}
+},
+"open": "月、水～日、祝日、祝前日: 17:00～23:00 （料理L.O. 22:30）",
+"close": "火",
+"party_capacity": 42,
+"other_memo": "",
+"shop_detail_memo": "テラス席のみペット可◆要予約◆",
+"budget_memo": "",
+"wedding": "要相談",
+"course": "あり",
+"free_drink": "あり ：コースのみ",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "禁煙席なし",
+"charter": "貸切可 ：15名様以上で要相談",
+"parking": "なし",
+"barrier_free": "なし",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "なし",
+"midnight": "営業していない",
+"english": "なし",
+"pet": "可",
+"child": "お子様連れ歓迎",
+"wifi": "なし",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ001231594/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ001231594/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J000450848",
+"name": "元ちゃん 千里丘",
+"logo_image": "https://imgfp.hotp.jp/IMGH/49/41/P025324941/P025324941_69.jpg",
+"name_kana": "げんちゃん",
+"address": "大阪府摂津市千里丘１丁目12-32",
+"station_name": "千里丘",
+"ktai_coupon": 1,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7917887826,
+"lng": 135.5487004091,
+"genre": {
+"name": "ラーメン",
+"catch": "愛され続けて創業32周年のラーメン屋！",
+"code": "G013"
+},
+"budget": {
+"code": "B001",
+"name": "1501～2000円",
+"average": "800円～1,000円"
+},
+"catch": "お得なサービス定食！ 1人でもいけるカウンター",
+"capacity": 18,
+"access": "千里丘駅から徒歩5分",
+"mobile_access": "千里丘駅から徒歩5分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ000450848/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/38/06/P025223806/P025223806_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/38/06/P025223806/P025223806_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/38/06/P025223806/P025223806_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/38/06/P025223806/P025223806_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/38/06/P025223806/P025223806_100.jpg"
+}
+},
+"open": "月～日、祝日、祝前日: 11:00～14:00 （料理L.O. 14:00 ドリンクL.O. 14:00）18:00～翌0:00 （料理L.O. 23:45 ドリンクL.O. 23:45）",
+"close": "不定休",
+"party_capacity": 18,
+"other_memo": "ご不明点ありましたらお問い合わせください",
+"shop_detail_memo": "ご不明点ありましたらお問い合わせください",
+"budget_memo": "PayPay利用可。ご不明点ありましたらお問い合わせください。",
+"wedding": "承っておりません",
+"free_drink": "なし ：ございません",
+"free_food": "なし ：ございません",
+"private_room": "なし ：個室はございません。",
+"horigotatsu": "なし ：掘りごたつはございません。",
+"tatami": "なし ：お座敷はございません。",
+"card": "利用不可",
+"non_smoking": "全面禁煙",
+"charter": "貸切不可 ：貸切は承っておりません",
+"parking": "なし ：お近くのパーキングをお使いください",
+"barrier_free": "なし ：サポートが必要な場合はスタッフまでお声かけください",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "あり",
+"midnight": "営業している",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れOK ：是非ご家族でお越しください",
+"wifi": "あり",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ000450848/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ000450848/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J001200570",
+"name": "躍起",
+"logo_image": "https://imgfp.hotp.jp/IMGH/97/90/P030119790/P030119790_69.jpg",
+"name_kana": "やっき",
+"address": "大阪府摂津市千里丘２-1-2",
+"station_name": "千里丘",
+"ktai_coupon": 1,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7906944936,
+"lng": 135.5500308855,
+"genre": {
+"name": "和食",
+"catch": "昼は定食、夜は焼き鳥居酒屋",
+"code": "G004"
+},
+"budget": {
+"code": "B002",
+"name": "2001～3000円",
+"average": "ランチ～￥999/ディナー￥3,000～￥3,999"
+},
+"catch": "JR千里丘駅にオープン★ NEW麺・丼の食事処躍起",
+"capacity": 24,
+"access": "JR千里丘駅西口を降りて、ミスタードーナツの前をまっすぐ★　JR千里丘駅より徒歩1分！駅チカで安心♪",
+"mobile_access": ".",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ001200570/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/16/72/P031751672/P031751672_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/16/72/P031751672/P031751672_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/16/72/P031751672/P031751672_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/16/72/P031751672/P031751672_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/16/72/P031751672/P031751672_100.jpg"
+}
+},
+"open": "月～木: 11:30～14:0017:30～22:30 （料理L.O. 22:30）金、祝前日: 11:30～14:0017:30～23:30 （料理L.O. 23:00）土: 17:30～23:30 （料理L.O. 23:30）日、祝日: 17:30～22:30 （料理L.O. 22:30）",
+"close": "定休日は不定期となります。ご了承下さいませ。",
+"party_capacity": 50,
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "",
+"wedding": "",
+"course": "あり",
+"free_drink": "あり ：飲み放題はコースとの併用とします",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "全面禁煙",
+"charter": "貸切不可",
+"parking": "なし",
+"barrier_free": "なし",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "あり",
+"lunch": "あり",
+"midnight": "営業している",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れ歓迎",
+"wifi": "あり",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ001200570/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ001200570/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J003693189",
+"name": "鳥彦",
+"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
+"name_kana": "とりひこ",
+"address": "大阪府摂津市千里丘２-1-３",
+"station_name": "千里丘",
+"ktai_coupon": 1,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7907458792,
+"lng": 135.5501411518,
+"genre": {
+"name": "居酒屋",
+"catch": "摂津市/千里丘/焼鳥/居酒屋",
+"code": "G001"
+},
+"budget": {
+"code": "B003",
+"name": "3001～4000円",
+"average": ""
+},
+"catch": "",
+"capacity": 22,
+"access": "千里丘駅から638m",
+"mobile_access": "千里丘駅から638m",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ003693189/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/04/91/P043070491/P043070491_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/04/91/P043070491/P043070491_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/04/91/P043070491/P043070491_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/04/91/P043070491/P043070491_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/04/91/P043070491/P043070491_100.jpg"
+}
+},
+"open": "月～木、日、祝日: 17:00～翌0:30金、土、祝前日: 17:00～翌3:00",
+"close": "水（第３）",
+"party_capacity": "",
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "",
+"wedding": "",
+"course": "なし",
+"free_drink": "なし",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "禁煙席なし",
+"charter": "貸切不可",
+"parking": "なし",
+"barrier_free": "なし",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "なし",
+"midnight": "営業している",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れ不可",
+"wifi": "未確認",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ003693189/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ003693189/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J003340258",
+"name": "Danke 段家",
+"logo_image": "https://imgfp.hotp.jp/IMGH/15/92/P040941592/P040941592_69.jpg",
+"name_kana": "だんけ",
+"address": "大阪府摂津市千里丘１丁目1２－３２",
+"station_name": "千里丘",
+"ktai_coupon": 0,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7918429407,
+"lng": 135.5485943055,
+"genre": {
+"name": "ダイニングバー・バル",
+"catch": "貸切OK！千里丘の隠れ家レストランバル♪",
+"code": "G002"
+},
+"budget": {
+"code": "B008",
+"name": "4001～5000円",
+"average": "4000円～5000円"
+},
+"catch": "宴会パーティーにおすすめ 豊富なドリンク",
+"capacity": 30,
+"access": "JR千里丘から徒歩約4分/阪急摂津市から約徒歩10分",
+"mobile_access": "JR千里丘から徒歩約4分/阪急摂津市から約徒歩10分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ003340258/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/50/66/P046165066/P046165066_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/50/66/P046165066/P046165066_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/50/66/P046165066/P046165066_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/50/66/P046165066/P046165066_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/50/66/P046165066/P046165066_100.jpg"
+}
+},
+"open": "火～木: 11:30～15:00 （料理L.O. 14:00 ドリンクL.O. 14:30）金～日: 11:30～15:00 （料理L.O. 14:00 ドリンクL.O. 14:30）18:00～22:00 （料理L.O. 21:00 ドリンクL.O. 21:30）",
+"close": "月",
+"party_capacity": 60,
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "お通し代なし",
+"wedding": "貸切可能です！幹事様のご相談お待ちしております！",
+"course": "あり",
+"free_drink": "なし",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "全面禁煙",
+"charter": "貸切可",
+"parking": "なし ：近くに有料パーキングあり",
+"barrier_free": "なし",
+"show": "あり",
+"karaoke": "なし",
+"band": "不可",
+"tv": "あり",
+"lunch": "あり",
+"midnight": "営業していない",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れ歓迎",
+"wifi": "なし",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ003340258/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ003340258/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J003984239",
+"name": "カラオケ喫茶 poppo ポッポ",
+"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
+"name_kana": "からおけきっさ　ぽっぽ",
+"address": "大阪府摂津市千里丘２－2－16",
+"station_name": "千里丘",
+"ktai_coupon": 1,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7905453308,
+"lng": 135.5494695509,
+"genre": {
+"name": "カラオケ・パーティ",
+"catch": "カラオケ/ビール/おつまみ",
+"code": "G011"
+},
+"budget": {
+"code": "",
+"name": "",
+"average": "2000円"
+},
+"catch": "",
+"capacity": 10,
+"access": "千里丘駅から徒歩4分",
+"mobile_access": "千里丘駅から徒歩4分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ003984239/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/10/93/P046021093/P046021093_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/10/93/P046021093/P046021093_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/10/93/P046021093/P046021093_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/10/93/P046021093/P046021093_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/10/93/P046021093/P046021093_100.jpg"
+}
+},
+"open": "月、火、木～日、祝日、祝前日: 13:00～17:00 （料理L.O. 17:00 ドリンクL.O. 16:30）",
+"close": "水",
+"party_capacity": "",
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "",
+"wedding": "",
+"course": "なし",
+"free_drink": "なし",
+"free_food": "なし",
+"private_room": "なし",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用不可",
+"non_smoking": "全面禁煙",
+"charter": "貸切不可",
+"parking": "なし",
+"barrier_free": "なし",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "なし",
+"lunch": "なし",
+"midnight": "営業していない",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れ不可",
+"wifi": "なし",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ003984239/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ003984239/scoupon/?vos=nhppalsa000016"
+}
+},
+{
+"id": "J003648544",
+"name": "うの屋 千里丘駅前3号店",
+"logo_image": "https://imgfp.hotp.jp/SYS/cmn/images/common/diary/custom/m30_img_noimage.gif",
+"name_kana": "うのや　せんりおかえきまえさんごうてん",
+"address": "大阪府摂津市千里丘１-5-19",
+"station_name": "千里丘",
+"ktai_coupon": 0,
+"large_service_area": {
+"code": "SS20",
+"name": "関西"
+},
+"service_area": {
+"code": "SA23",
+"name": "大阪"
+},
+"large_area": {
+"code": "Z023",
+"name": "大阪"
+},
+"middle_area": {
+"code": "Y356",
+"name": "茨木"
+},
+"small_area": {
+"code": "XELT",
+"name": "千里丘"
+},
+"lat": 34.7918865975,
+"lng": 135.55076828,
+"genre": {
+"name": "居酒屋",
+"catch": "創作串カツ、海鮮料理が名物の居酒屋♪",
+"code": "G001"
+},
+"budget": {
+"code": "B008",
+"name": "4001～5000円",
+"average": "4000円～5000円"
+},
+"catch": "少人数から団体まで♪ 駅チカで便利！",
+"capacity": 34,
+"access": "【千里丘駅より】徒歩2分【摂津市駅より】徒歩20分【大阪モノレール沢良宜駅より】徒歩35分",
+"mobile_access": "【千里丘駅より】徒歩2分【摂津市駅より】徒歩20分",
+"urls": {
+"pc": "https://www.hotpepper.jp/strJ003648544/?vos=nhppalsa000016"
+},
+"photo": {
+"pc": {
+"l": "https://imgfp.hotp.jp/IMGH/07/34/P042770734/P042770734_238.jpg",
+"m": "https://imgfp.hotp.jp/IMGH/07/34/P042770734/P042770734_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/07/34/P042770734/P042770734_58_s.jpg"
+},
+"mobile": {
+"l": "https://imgfp.hotp.jp/IMGH/07/34/P042770734/P042770734_168.jpg",
+"s": "https://imgfp.hotp.jp/IMGH/07/34/P042770734/P042770734_100.jpg"
+}
+},
+"open": "火～土: 17:00～23:00 （料理L.O. 22:00 ドリンクL.O. 22:30）",
+"close": "月、日",
+"party_capacity": 34,
+"other_memo": "",
+"shop_detail_memo": "",
+"budget_memo": "",
+"wedding": "",
+"course": "あり",
+"free_drink": "あり",
+"free_food": "なし",
+"private_room": "あり",
+"horigotatsu": "なし",
+"tatami": "なし",
+"card": "利用可",
+"non_smoking": "禁煙席なし",
+"charter": "貸切可",
+"parking": "なし",
+"barrier_free": "なし",
+"show": "なし",
+"karaoke": "なし",
+"band": "不可",
+"tv": "あり",
+"lunch": "なし",
+"midnight": "営業していない",
+"english": "なし",
+"pet": "不可",
+"child": "お子様連れ歓迎",
+"wifi": "あり",
+"coupon_urls": {
+"pc": "https://www.hotpepper.jp/strJ003648544/map/?vos=nhppalsa000016",
+"sp": "https://www.hotpepper.jp/strJ003648544/scoupon/?vos=nhppalsa000016"
