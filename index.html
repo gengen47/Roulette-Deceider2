@@ -669,6 +669,26 @@
                                 const price = parseInt(match[1].replace(/,/g, ''));
                                 return price <= strictMaxPrice && price >= strictMinPrice;
                             }
+
+                            // 救済ロジック: 「ランチあり」だが価格不明な場合、ディナー予算から推定する
+                            if (text.includes('あり')) {
+                                // ディナー予算情報を取得
+                                let budgetText = s.budget;
+                                if ((!budgetText || budgetText === '') && s.budgetAverage) {
+                                    budgetText = s.budgetAverage;
+                                }
+
+                                if (budgetText) {
+                                    const budgetMatch = budgetText.match(/(\d[\d,]*)/);
+                                    if (budgetMatch) {
+                                        let dinnerPrice = parseInt(budgetMatch[1].replace(/,/g, ''));
+                                        // ランチはディナーより安いと仮定し、一律 -1000円 する (最低0円)
+                                        let estimatedLunchPrice = Math.max(0, dinnerPrice - 1000);
+                                        return estimatedLunchPrice <= strictMaxPrice && estimatedLunchPrice >= strictMinPrice;
+                                    }
+                                }
+                            }
+
                             // 厳格フィルタ: 解析不能なフォーマット（例: "なし"）の場合は除外する
                             return false;
                         });
