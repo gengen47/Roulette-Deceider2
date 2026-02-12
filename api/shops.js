@@ -31,7 +31,9 @@ export default async function handler(req, res) {
     }
 
     try {
-        const response = await fetch(`https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${params.toString()}`);
+        // URLSearchParamsはカンマを%2Cにエンコードするが、HotPepper APIは生のカンマを期待する場合があるため置換
+        const queryString = params.toString().replace(/%2C/g, ',');
+        const response = await fetch(`https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?${queryString}`);
         if (!response.ok) {
             throw new Error(`API responded with status ${response.status}`);
         }
