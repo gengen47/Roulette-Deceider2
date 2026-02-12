@@ -658,13 +658,19 @@
                         // === ランチモード: 「lunch」フィールドの価格解析 ===
                         shops = shops.filter(s => {
                             const text = s.lunch;
-                            if (!text) return true; // 情報なしは通す
-                            const match = text.match(/(\d{1,3}(?:,\d{3})*)/);
+                            // 厳格フィルタ: 情報なし(null/undefined/空文字)の場合は除外する
+                            if (!text) return false;
+
+                            // Regex修正: 桁区切りがあってもなくても、4桁以上の数値も正しく抽出できるように変更
+                            // 旧: /(\d{1,3}(?:,\d{3})*)/ -> "2001" を "200" と誤認していた
+                            // 新: /(\d[\d,]*)/ -> 数字とカンマの連続を抽出
+                            const match = text.match(/(\d[\d,]*)/);
                             if (match) {
                                 const price = parseInt(match[1].replace(/,/g, ''));
                                 return price <= strictMaxPrice && price >= strictMinPrice;
                             }
-                            return true;
+                            // 厳格フィルタ: 解析不能なフォーマット（例: "なし"）の場合は除外する
+                            return false;
                         });
                     } else {
                         // === ディナーモード: 「budget」(テキスト)の価格解析 ===
@@ -678,15 +684,17 @@
                                 text = s.budgetAverage;
                             }
 
-                            if (!text) return true; // 情報なしは通す
+                            // 厳格フィルタ: 情報なしの場合は除外する
+                            if (!text) return false;
 
-                            const match = text.match(/(\d{1,3}(?:,\d{3})*)/);
+                            const match = text.match(/(\d[\d,]*)/);
                             if (match) {
                                 const price = parseInt(match[1].replace(/,/g, ''));
                                 // 抽出した金額（帯域の下限）が、ユーザー指定の範囲内か判定
                                 return price <= strictMaxPrice && price >= strictMinPrice;
                             }
-                            return true;
+                            // 厳格フィルタ: 解析不能な場合は除外する
+                            return false;
                         });
                     }
                 }
