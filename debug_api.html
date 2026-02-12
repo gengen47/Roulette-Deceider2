@@ -15,10 +15,12 @@
         async function runTest() {
             try {
                 const params = new URLSearchParams({
-                    keyword: 'ハッピースマイル和',
-                    middle_area: 'Y356', // Ibaraki/Senrioka area code
+                    id: 'J004509478', // Happy Smile Nagomi
+                    middle_area: 'Y356',
+                    lat: 34.79178, // Senrioka general
+                    lng: 135.5487, // Senrioka general
+                    range: 3,
                     count: 10
-                    // lat/lng removed
                 });
 
                 document.getElementById('status').innerText = 'Fetching /api/shops...';
