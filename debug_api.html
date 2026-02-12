@@ -15,10 +15,10 @@
         async function runTest() {
             try {
                 const params = new URLSearchParams({
-                    keyword: 'ハッピースマイル和', // Correct store name
-                    large_service_area: 'SS20', // Kansai area
+                    keyword: 'ハッピースマイル和',
+                    middle_area: 'Y356', // Ibaraki/Senrioka area code
                     count: 10
-                    // lat/lng/range removed
+                    // lat/lng removed
                 });
 
                 document.getElementById('status').innerText = 'Fetching /api/shops...';
