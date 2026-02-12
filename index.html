@@ -1310,6 +1310,14 @@
                 actionEl.textContent = '🔥 今すぐ予約する（ホットペッパー）';
                 actionEl.href = winner.data.url || 'https://www.hotpepper.jp/';
                 actionEl.classList.remove('hidden');
+
+                // ValueCommerce LinkSwitch 動的リンク更新（もしサポートされていれば）
+                // VCDALが動的にhref変更を検知しない場合の保険
+                setTimeout(() => {
+                    if (typeof VS !== 'undefined' && VS.LinkSwitch && VS.LinkSwitch.update) {
+                        VS.LinkSwitch.update();
+                    }
+                }, 100);
             } else {
                 const emojis = { 'コンビニ': '🏪', '自炊': '🍳', '断食（食べない）': '🧘' };
                 emojiEl.textContent = emojis[winner.name] || winner.data.emoji || '✨';
@@ -1378,6 +1386,11 @@
             localStorage.setItem('guide_banner_closed', 'true');
         }
     </script>
+    <!-- ValueCommerce LinkSwitch -->
+    <script type="text/javascript" language="javascript">
+        var vc_pid = "892542011";
+    </script>
+    <script type="text/javascript" src="//aml.valuecommerce.com/vcdal.js" async></script>
 </body>
 
 <script>
