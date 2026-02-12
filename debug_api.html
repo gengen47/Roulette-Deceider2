@@ -15,8 +15,10 @@
         async function runTest() {
             try {
                 const params = new URLSearchParams({
+                    lat: 34.79178,  // lat of Gussanchi
+                    lng: 135.5487, // lng of Gussanchi
                     keyword: 'ぐっさん家',
-                    // lat/lng removed to test keyword search exclusively
+                    range: 3,
                     count: 10
                 });
 
