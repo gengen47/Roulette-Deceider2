@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    const { lat, lng, range = 3, count = 100, genre, budget, open_now } = req.query;
+    const { lat, lng, range = 3, count = 100, genre, budget, lunch, open_now } = req.query;
     const API_KEY = process.env.HP_API_KEY;
 
     if (!API_KEY) {
@@ -18,6 +18,7 @@ export default async function handler(req, res) {
 
     if (genre) params.append('genre', genre);
     if (budget) params.append('budget', budget);
+    if (lunch) params.append('lunch', lunch);
 
     // 営業中フィルター（第1層: サーバーサイド時間判定）
     if (open_now === 'true') {
@@ -25,7 +26,7 @@ export default async function handler(req, res) {
         const now = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Tokyo' }));
         const hour = now.getHours();
 
-        if (hour >= 11 && hour < 14) params.append('lunch', 1);
+        if (hour >= 11 && hour < 14 && !params.has('lunch')) params.append('lunch', 1);
         if (hour >= 23 || hour < 5) params.append('midnight', 1);
     }
 

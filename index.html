@@ -632,31 +632,20 @@
             const isLunchMode = document.querySelector('input[name="time-mode"]:checked').value === 'lunch';
             let strictMaxPrice = 999999; // クライアントフィルタ用
 
+            // ユーザー指定予算の上限を取得
+            if (budgetMax) {
+                strictMaxPrice = parseInt(budgetMax);
+            }
+
             // 予算コードの範囲をリストで取得（金額ベース）
+            // ランチモード時はAPIのbudgetフィルタを使わない（lunch=1のみで広く検索し、クライアント側で絞る）
+            // ディナーモード時（または指定なし）はAPIのbudgetフィルタを使用
             let budgetCodes = [];
-            if (budgetMin || budgetMax) {
+            if (!isLunchMode && (budgetMin || budgetMax)) {
                 const minPrice = budgetMin ? parseInt(budgetMin) : 0;
-                let maxPrice = budgetMax ? parseInt(budgetMax) : 999999;
-
-                strictMaxPrice = maxPrice; // ユーザー指定の上限を保持
-
-                // ランチの場合は、取りこぼし防止のために上限を+1500円緩める
-                // (APIはディナー予算で検索するため)
-                if (isLunchMode && budgetMax) {
-                    maxPrice += 1500;
-                }
+                const maxPrice = strictMaxPrice;
 
                 budgetCodes = BUDGETS.filter(b => {
-                    // 予算帯の中央値などを考慮するのも手だが、今回は
-                    // 「予算帯のレンジが、指定されたレンジと少しでも被ればOK」あるいは
-                    // 「予算帯が指定レンジに完全に収まる」など考え方はある。
-                    // ここではシンプルに「指定価格帯に含まれる予算コード」を選択する。
-                    // 例: 2000円〜4000円 指定
-                    // -> 1501~2000 (一部被り) -> 含める？
-                    // -> 2001~3000 (完全) -> 含める
-                    // -> 3001~4000 (完全) -> 含める
-                    // -> 4001~5000 (一部被り) -> 含めない？
-
                     // ホットペッパーの仕様上、予算コードは「平均予算」に近い概念。
                     // なので、「その予算帯のmin/maxが、指定レンジと被っているか」で判定する。
                     return (b.min <= maxPrice && b.max >= minPrice);
@@ -668,26 +657,29 @@
             const openNowChecked = document.getElementById('filter-open-now').checked;
 
             try {
-                let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal, openNowChecked);
+                // ランチモード時は isLunchMode=true を渡して lunch=1 パラメータを付与
+                let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, budgetCodes, rangeVal, openNowChecked, isLunchMode);
 
                 // ランチ予算での厳密なフィルタリング
-                if (isLunchMode && budgetMax) {
+                if (isLunchMode && (budgetMax || budgetMin)) {
+                    // 下限を取得
+                    let strictMinPrice = 0;
+                    if (budgetMin) strictMinPrice = parseInt(budgetMin);
+
                     shops = shops.filter(s => {
-                        // 平均予算テキストからランチ価格を推測
-                        // 例: "ランチ900円", "ランチ:1500円", "昼:1000円～"
-                        const text = s.budgetAverage;
+                        // APIから取得した lunch フィールド（例: "900円"）を解析
+                        const text = s.lunch;
                         if (!text) return true; // 情報なしは通す（緩い判断）
 
-                        // "ランチ" or "昼" の後に続く数字を探す
-                        // 金額にはカンマが含まれることがある (\d{1,3}(?:,\d{3})*)
-                        const match = text.match(/(?:ランチ|昼|Lunch).*?(\d{1,3}(?:,\d{3})*)/);
+                        // 数字（カンマ区切り含む）を探す
+                        const match = text.match(/(\d{1,3}(?:,\d{3})*)/);
                         if (match) {
                             const price = parseInt(match[1].replace(/,/g, ''));
-                            // ランチ価格が見つかった場合、それがユーザー指定の上限以下か判定
-                            return price <= strictMaxPrice;
+                            // ユーザー指定の範囲内か判定（下限もチェック）
+                            return price <= strictMaxPrice && price >= strictMinPrice;
                         }
 
-                        // ランチ価格が見つからない場合も通す（API検索時のフィルタを信頼）
+                        // 価格が見つからない場合も通す
                         return true;
                     });
                 }
@@ -733,7 +725,7 @@
         // =====================================================================
         //  ホットペッパーAPI（Vercel Serverless Function経由）
         // =====================================================================
-        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false) {
+        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false, lunch = false) {
             let params = `lat=${lat}&lng=${lng}&range=${range}&count=100`;
 
             // ジャンル指定
@@ -747,6 +739,10 @@
             // 営業中フィルター（サーバーサイド処理用フラグ）
             if (openNow) {
                 params += '&open_now=true';
+            }
+            // ランチ営業あり（サーバーサイド処理用フラグ）
+            if (lunch) {
+                params += '&lunch=1';
             }
 
             try {
@@ -766,6 +762,7 @@
                         url: s.urls ? s.urls.pc : '',
                         budget: s.budget ? s.budget.name : '',
                         budgetAverage: s.budget ? s.budget.average : '', // クライアント側解析用
+                        lunch: s.lunch || '', // ランチ予算テキスト
                         open: s.open || '',
                         close: s.close || '',
                     }));
