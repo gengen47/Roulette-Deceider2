@@ -1303,10 +1303,21 @@
             const winSlice = (enabled[winnerIdx].weight / total) * Math.PI * 2;
             const winMid = cumAngle + winSlice / 2;
 
-            // ポインターは上部（-π/2）なので、当選中央がそこに来るように最終角度を計算
-            // 最終的な回転量 = 複数回転 + 調整角度
-            const extraSpins = 5 + Math.floor(Math.random() * 3); // 5〜7回転
-            const targetAngle = extraSpins * Math.PI * 2 + (Math.PI * 2 - winMid - Math.PI / 2);
+            // 回転計算の修正: 現在の回転角(currentRotation)を考慮して、目標位置と整合するように計算
+            // 目標: finalRotation + winMid = -Math.PI/2 (mod 2π)
+            // つまり finalRotation ≡ -Math.PI/2 - winMid (mod 2π)
+            const baseTarget = -Math.PI / 2 - winMid;
+
+            // 最低回転数文を確保した上で、整合する k を探す
+            const minSpins = 5 + Math.floor(Math.random() * 3); // 5〜7回転
+            const minRotation = currentRotation + minSpins * Math.PI * 2;
+
+            // k は (minRotation - baseTarget) / 2π の繰り上げ
+            const k = Math.ceil((minRotation - baseTarget) / (Math.PI * 2));
+            const finalRotation = baseTarget + k * Math.PI * 2;
+
+            // アニメーション用の差分角度
+            const targetAngle = finalRotation - currentRotation;
 
             const startTime = performance.now();
             const duration = 4000 + Math.random() * 1000; // 4〜5秒
