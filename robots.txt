@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://gurukime.com/sitemap.xml
