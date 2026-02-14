@@ -927,13 +927,15 @@
                     drawRoulette();
                     statusBar.textContent = `📍 周辺 ${shops.length} 店舗からランダム${pickCount}店舗を選出`;
 
-                    // Show Filter & Roulette (scroll to filter panel)
-                    const filterPanel = document.getElementById('filter-panels');
-                    if (filterPanel) {
-                        filterPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    } else {
-                        document.getElementById('roulette-container').scrollIntoView({ behavior: 'smooth' });
-                    }
+                    // Show Filter & Roulette (scroll to filter toggle using block: 'start' to align to top)
+                    setTimeout(() => {
+                        const filterToggle = document.getElementById('filter-toggle');
+                        if (filterToggle) {
+                            filterToggle.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        } else {
+                            document.getElementById('roulette-container').scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }, 100); // Small delay to ensure DOM update
                 } else {
                     statusBar.textContent = '条件に合うお店が見つかりませんでした。';
                     alert('条件に合うお店が見つかりませんでした。場所や条件を変えてみてください。');
