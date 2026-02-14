@@ -111,11 +111,15 @@
                 <div class="flex bg-gray-100 p-1 rounded-lg mb-4">
                     <label class="flex-1 text-center cursor-pointer">
                         <input type="radio" name="time-mode" value="lunch" class="hidden peer">
-                        <span class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞 ランチ</span>
+                        <span
+                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞
+                            ランチ</span>
                     </label>
                     <label class="flex-1 text-center cursor-pointer">
                         <input type="radio" name="time-mode" value="dinner" class="hidden peer" checked>
-                        <span class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙 ディナー</span>
+                        <span
+                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙
+                            ディナー</span>
                     </label>
                 </div>
 
@@ -150,7 +154,8 @@
         </div>
 
         <!-- 検索ボタン -->
-        <button id="btn-search-area" class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full mb-6">
+        <button id="btn-search-area"
+            class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full mb-6">
             このエリアで検索 & ルーレット設定
         </button>
 
@@ -158,21 +163,24 @@
         <section id="roulette-container" class="my-4 hidden">
             <div class="pointer"></div>
             <canvas id="roulette-canvas" width="300" height="300"></canvas>
-            
+
             <!-- START ボタン -->
             <button id="btn-start" class="btn-start mt-4 mb-6" disabled>START</button>
         </section>
 
         <!-- ===== 設定パネル ===== -->
-        <section id="settings-panel" class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in hidden">
+        <section id="settings-panel"
+            class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in hidden">
             <h2 class="text-base font-bold text-accent flex items-center gap-2">⚙️ 選択肢 & 確率設定</h2>
             <div id="choices-list" class="space-y-3"></div>
             <!-- カスタム選択肢追加 -->
             <div class="pt-2 border-t border-gray-100">
                 <p class="text-xs text-gray-400 mb-2 font-semibold">＋ カスタム選択肢を追加</p>
                 <div class="flex gap-2">
-                    <input id="custom-input" type="text" class="add-input flex-1 p-2 border rounded" placeholder="例：コンビニ" maxlength="20" />
-                    <button id="btn-add-custom" class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
+                    <input id="custom-input" type="text" class="add-input flex-1 p-2 border rounded"
+                        placeholder="例：コンビニ" maxlength="20" />
+                    <button id="btn-add-custom"
+                        class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
                 </div>
             </div>
         </section>
@@ -180,9 +188,9 @@
 
     </main>
 
-    <!-- ===== 結果モーダル ===== -->
-    <div id="result-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div class="bg-white rounded-2xl p-6 w-11/12 max-w-sm text-center shadow-2xl transform transition-all scale-100">
+    <!-- ===== 結果モーダル (index.html準拠) ===== -->
+    <div id="result-modal" class="modal-backdrop">
+        <div class="modal-card">
             <div id="result-emoji" class="text-5xl mb-3">🎉</div>
             <h3 id="result-title" class="text-xl font-extrabold text-accent mb-1"></h3>
             <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
@@ -192,7 +200,8 @@
                 詳細を見る
             </a>
             <br />
-            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄 もう一回まわす</button>
+            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄
+                もう一回まわす</button>
         </div>
     </div>
 
