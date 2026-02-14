@@ -53,11 +53,102 @@
         }
 
         #map {
-            height: 60vh;
+            height: 50vh;
             width: 100%;
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             z-index: 1;
+        }
+
+        /* ---------- ルーレット ---------- */
+        #roulette-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #roulette-canvas {
+            border-radius: 50%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+        }
+
+        /* 三角のポインター */
+        .pointer {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 28px solid #212121;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .3));
+            z-index: 10;
+        }
+
+        /* ---------- START ボタン ---------- */
+        .btn-start {
+            background: linear-gradient(135deg, #FFAB40 0%, #FF8F00 100%);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: .05em;
+            border: none;
+            border-radius: 9999px;
+            padding: .9rem 3rem;
+            box-shadow: 0 6px 20px rgba(255, 171, 64, .45);
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .btn-start:active {
+            transform: scale(.95);
+            box-shadow: 0 3px 10px rgba(255, 171, 64, .3);
+        }
+
+        .btn-start:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        /* ---------- 結果モーダル ---------- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        /* ---------- フィルターパネル (index.html準拠) ---------- */
+        .filter-panel {
+            border: 1px solid #F0F0F0;
+            transition: max-height .3s ease;
+        }
+
+        .add-input {
+            border: 2px dashed #FFAB40;
+            border-radius: .75rem;
+            padding: .5rem .75rem;
+            outline: none;
+            font-size: .875rem;
+            width: 100%;
+            transition: border-color .2s;
+        }
+
+        .add-input:focus {
+            border-color: #FF8F00;
         }
     </style>
 </head>
@@ -85,21 +176,126 @@
     <main class="flex-1 flex flex-col items-center px-4 pb-8 w-full max-w-md mx-auto">
         <h1 class="text-lg font-bold text-accent mb-4 mt-2">🗺️ 地図からお店を探す</h1>
 
+
+        <!-- ===== フィルターパネル ===== -->
+        <section class="w-full max-w-md mt-2 mb-3 filter-panel bg-white shadow-sm fade-in rounded-lg">
+            <div id="filter-toggle" class="filter-toggle flex items-center justify-between px-4 py-3 cursor-pointer">
+                <h2 class="text-sm font-bold text-accent flex items-center gap-2">🔍 店舗フィルター</h2>
+                <span class="arrow text-gray-400 text-xs">▼</span>
+            </div>
+            <div id="filter-body" class="px-4 pb-4 hidden">
+                <!-- ジャンル除外 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">除外するジャンル（タップで除外）</p>
+                <div id="genre-chips" class="flex flex-wrap gap-2 mb-4"></div>
+
+                <!-- 距離 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">📏 地図中心からの検索半径</p>
+                <select id="distance-range" class="budget-select mb-4 w-full p-2 border rounded">
+                    <option value="1">300m以内</option>
+                    <option value="2">500m以内</option>
+                    <option value="3" selected>1km以内</option>
+                    <option value="4">2km以内</option>
+                    <option value="5">3km以内</option>
+                </select>
+
+                <!-- ランチ/ディナー切り替え -->
+                <div class="flex bg-gray-100 p-1 rounded-lg mb-4">
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="time-mode" value="lunch" class="hidden peer">
+                        <span
+                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞
+                            ランチ</span>
+                    </label>
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="time-mode" value="dinner" class="hidden peer" checked>
+                        <span
+                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙
+                            ディナー</span>
+                    </label>
+                </div>
+
+                <!-- 予算帯 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">💰 予算帯</p>
+                <div class="flex gap-2 mb-4">
+                    <select id="budget-min" class="budget-select flex-1 p-2 border rounded">
+                        <option value="">下限なし</option>
+                    </select>
+                    <span class="self-center text-gray-400 text-sm font-bold">〜</span>
+                    <select id="budget-max" class="budget-select flex-1 p-2 border rounded">
+                        <option value="">上限なし</option>
+                    </select>
+                </div>
+
+                <!-- 営業中フィルター（明日のグルメなのでデフォルトOFF） -->
+                <div class="flex items-center gap-2 mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer text-sm font-semibold text-accent">
+                        <input type="checkbox" id="filter-open-now" class="w-5 h-5 rounded accent-primary" />
+                        🟢 営業中の店舗のみ表示
+                    </label>
+                </div>
+            </div>
+        </section>
+
         <!-- 地図コンテナ -->
         <div id="map" class="mb-4"></div>
 
+        <!-- ステータス -->
+        <div id="status-bar" class="w-full max-w-md mb-2 text-center text-sm text-gray-500 fade-in">
+            📍 地図で場所を決めてください
+        </div>
+
         <!-- 検索ボタン -->
         <button id="btn-search-area"
-            class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full">
-            このエリアで検索
+            class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full mb-6">
+            このエリアで検索 & ルーレット設定
         </button>
 
-        <p class="text-xs text-gray-400 mt-4 text-center">
-            地図を動かして、探したい場所を中心に合わせてください。<br>
-            ※現在は中心点から半径1km以内を検索します。
-        </p>
+        <!-- ルーレット -->
+        <section id="roulette-container" class="my-4 hidden">
+            <div class="pointer"></div>
+            <canvas id="roulette-canvas" width="300" height="300"></canvas>
+
+            <!-- START ボタン -->
+            <button id="btn-start" class="btn-start mt-4 mb-6" disabled>START</button>
+        </section>
+
+        <!-- ===== 設定パネル ===== -->
+        <section id="settings-panel"
+            class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in hidden">
+            <h2 class="text-base font-bold text-accent flex items-center gap-2">⚙️ 選択肢 & 確率設定</h2>
+            <div id="choices-list" class="space-y-3"></div>
+            <!-- カスタム選択肢追加 -->
+            <div class="pt-2 border-t border-gray-100">
+                <p class="text-xs text-gray-400 mb-2 font-semibold">＋ カスタム選択肢を追加</p>
+                <div class="flex gap-2">
+                    <input id="custom-input" type="text" class="add-input flex-1 p-2 border rounded"
+                        placeholder="例：コンビニ" maxlength="20" />
+                    <button id="btn-add-custom"
+                        class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
+                </div>
+            </div>
+        </section>
+
 
     </main>
+
+    <!-- ===== 結果モーダル ===== -->
+    <div id="result-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div
+            class="bg-white rounded-2xl p-6 w-11/12 max-w-sm text-center shadow-2xl transform transition-all scale-100">
+            <div id="result-emoji" class="text-5xl mb-3">🎉</div>
+            <h3 id="result-title" class="text-xl font-extrabold text-accent mb-1"></h3>
+            <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
+            <img id="result-img" class="w-full rounded-xl mb-4 hidden" alt="店舗画像" />
+            <a id="result-action" href="#" target="_blank" rel="noopener"
+                class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
+                詳細を見る
+            </a>
+            <br />
+            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄
+                もう一回まわす</button>
+        </div>
+    </div>
 
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
