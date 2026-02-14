@@ -18,6 +18,23 @@
     <meta name="theme-color" content="#FFAB40" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFAB40',
+                        accent: '#212121',
+                        surface: '#FAFAFA',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
     <style>
         * {
             box-sizing: border-box;
@@ -33,22 +50,15 @@
         }
 
         header {
-            background: #FAFAFA;
-            padding: 1rem;
-            text-align: center;
-            position: sticky;
-            top: 0;
-            z-index: 50;
+            /* Tailwindで制御するため削除 */
         }
 
         header img {
-            height: 40px;
+            /* Tailwindで制御するため削除 */
         }
 
         header p {
-            font-size: .75rem;
-            color: #999;
-            margin-top: .25rem;
+            /* Tailwindで制御するため削除 */
         }
 
         main {
@@ -200,9 +210,21 @@
 </head>
 
 <body>
-    <header>
-        <a href="/"><img src="logo.svg" alt="グルキメ！" /></a>
-        <p>運命のゴハン、回して決めよう！</p>
+    <header class="px-4 pt-1 pb-2 flex flex-col items-center justify-center sticky top-0 z-50 relative"
+        style="background:#FAFAFA;">
+
+        <!-- 閉じるボタン -->
+        <a href="/"
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition"
+            aria-label="戻る">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </a>
+
+        <img src="logo.svg" alt="グルキメ！" style="height:44px; object-fit:contain;" />
+        <p class="text-xs text-gray-500 mt-1">運命のゴハン、回して決めよう！</p>
     </header>
 
     <main>
