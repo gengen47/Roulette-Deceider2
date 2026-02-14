@@ -99,7 +99,7 @@
 
                 <!-- 距離 -->
                 <p class="text-xs text-gray-400 font-semibold mb-2">📏 地図中心からの検索半径</p>
-                <select id="distance-range" class="budget-select mb-4 w-full p-2 border rounded">
+                <select id="distance-range" class="budget-select mb-4">
                     <option value="1">300m以内</option>
                     <option value="2">500m以内</option>
                     <option value="3" selected>1km以内</option>
@@ -126,11 +126,11 @@
                 <!-- 予算帯 -->
                 <p class="text-xs text-gray-400 font-semibold mb-2">💰 予算帯</p>
                 <div class="flex gap-2 mb-4">
-                    <select id="budget-min" class="budget-select flex-1 p-2 border rounded">
+                    <select id="budget-min" class="budget-select flex-1">
                         <option value="">下限なし</option>
                     </select>
                     <span class="self-center text-gray-400 text-sm font-bold">〜</span>
-                    <select id="budget-max" class="budget-select flex-1 p-2 border rounded">
+                    <select id="budget-max" class="budget-select flex-1">
                         <option value="">上限なし</option>
                     </select>
                 </div>
@@ -177,8 +177,7 @@
             <div class="pt-2 border-t border-gray-100">
                 <p class="text-xs text-gray-400 mb-2 font-semibold">＋ カスタム選択肢を追加</p>
                 <div class="flex gap-2">
-                    <input id="custom-input" type="text" class="add-input flex-1 p-2 border rounded"
-                        placeholder="例：コンビニ" maxlength="20" />
+                    <input id="custom-input" type="text" class="add-input flex-1" placeholder="例：コンビニ" maxlength="20" />
                     <button id="btn-add-custom"
                         class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
                 </div>
