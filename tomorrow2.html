@@ -238,6 +238,11 @@
             z-index: 10;
         }
 
+        /* カスタムピンのドロップシャドウ */
+        .custom-pin-shadow {
+            filter: drop-shadow(2px 4px 6px rgba(0, 0, 0, 0.3));
+        }
+
         /* ---------- START ボタン ---------- */
         .btn-start {
             background: linear-gradient(135deg, #FFAB40 0%, #FF8F00 100%);
@@ -961,8 +966,9 @@
                 const pinIcon = L.icon({
                     iconUrl: '/icons/pin.png',
                     iconSize: [32, 32],
-                    iconAnchor: [16, 32], // 中央下をアンカーに
-                    popupAnchor: [0, -32] // ポップアップはピンの上
+                    iconAnchor: [16, 32],
+                    popupAnchor: [0, -32],
+                    className: 'custom-pin-shadow' // ドロップシャドウ用クラス
                 });
 
                 const marker = L.marker([s.lat, s.lng], { icon: pinIcon }).addTo(map);
