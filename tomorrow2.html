@@ -957,7 +957,15 @@
             shops.forEach(s => {
                 if (!s.lat || !s.lng) return;
 
-                const marker = L.marker([s.lat, s.lng]).addTo(map);
+                // カスタムアイコン定義
+                const pinIcon = L.icon({
+                    iconUrl: '/icons/pin.png',
+                    iconSize: [32, 32],
+                    iconAnchor: [16, 32], // 中央下をアンカーに
+                    popupAnchor: [0, -32] // ポップアップはピンの上
+                });
+
+                const marker = L.marker([s.lat, s.lng], { icon: pinIcon }).addTo(map);
 
                 const popupContent = `
                     <div class="text-sm font-sans p-1">
