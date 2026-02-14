@@ -365,6 +365,17 @@
             </svg>
         </a>
 
+        <!-- 地図アイコン (A案) -->
+        <a href="/tomorrow.html"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition"
+            aria-label="地図で探す">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0121 18.618V7.854a1 1 0 00-1.447-.894L14 7m0 13V7" />
+            </svg>
+        </a>
+
         <img src="logo.svg" alt="グルキメ！(ぐるきめ)" style="height:44px; object-fit:contain;" />
         <p class="text-xs text-gray-500 mt-1">運命のゴハン、回して決めよう！</p>
     </header>
@@ -448,6 +459,19 @@
 
         <!-- START ボタン -->
         <button id="btn-start" class="btn-start mt-2 mb-6" disabled>START</button>
+
+        <!-- 明日のグルメバナー (C案) -->
+        <a href="/tomorrow.html"
+            class="block w-full max-w-md mx-auto mb-6 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition fade-in">
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-primary mb-1">NEW FEATURE</span>
+                <h3 class="font-bold text-accent text-sm">📅 明日のお店を地図で予約</h3>
+                <p class="text-[10px] text-gray-500 mt-1">ゆっくり場所を指定して探せます</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-full">
+                <span class="text-2xl">🗺️</span>
+            </div>
+        </a>
 
         <!-- ===== 設定パネル ===== -->
         <section id="settings-panel" class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in">

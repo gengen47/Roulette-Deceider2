@@ -49,17 +49,7 @@
             line-height: 1.8;
         }
 
-        header {
-            /* Tailwindで制御するため削除 */
-        }
 
-        header img {
-            /* Tailwindで制御するため削除 */
-        }
-
-        header p {
-            /* Tailwindで制御するため削除 */
-        }
 
         main {
             max-width: 640px;
@@ -212,6 +202,17 @@
 <body>
     <header class="px-4 pt-1 pb-2 flex flex-col items-center justify-center sticky top-0 z-50 relative"
         style="background:#FAFAFA;">
+
+        <!-- 地図アイコン (A案) -->
+        <a href="/tomorrow.html"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition"
+            aria-label="地図で探す">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0121 18.618V7.854a1 1 0 00-1.447-.894L14 7m0 13V7" />
+            </svg>
+        </a>
 
         <!-- 閉じるボタン -->
         <a href="/"

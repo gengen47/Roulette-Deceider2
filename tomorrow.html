@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Y5P8DCKR9V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-Y5P8DCKR9V');
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>地図で探す | グルキメ！ - 明日のグルメを予約しよう</title>
+    <meta name="description" content="「明日のグルメ」は地図から周辺の飲食店を探せる機能です。場所を指定して、ルーレットで運命のお店を決めよう！" />
+    <link rel="canonical" href="https://gurukime.com/tomorrow.html" />
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFAB40',
+                        accent: '#212121',
+                        surface: '#FAFAFA',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet" />
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAFA;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #map {
+            height: 60vh;
+            width: 100%;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 1;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- ===== ヘッダー ===== -->
+    <header class="px-4 pt-1 pb-2 flex flex-col items-center justify-center sticky top-0 z-50 relative"
+        style="background:#FAFAFA;">
+
+        <!-- 閉じるボタン -->
+        <a href="/"
+            class="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition"
+            aria-label="戻る">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </a>
+
+        <img src="logo.svg" alt="グルキメ！" style="height:44px; object-fit:contain;" />
+        <p class="text-xs text-gray-500 mt-1">明日のグルメを地図で探そう</p>
+    </header>
+
+    <main class="flex-1 flex flex-col items-center px-4 pb-8 w-full max-w-md mx-auto">
+        <h1 class="text-lg font-bold text-accent mb-4 mt-2">🗺️ 地図からお店を探す</h1>
+
+        <!-- 地図コンテナ -->
+        <div id="map" class="mb-4"></div>
+
+        <!-- 検索ボタン -->
+        <button id="btn-search-area"
+            class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full">
+            このエリアで検索
+        </button>
+
+        <p class="text-xs text-gray-400 mt-4 text-center">
+            地図を動かして、探したい場所を中心に合わせてください。<br>
+            ※現在は中心点から半径1km以内を検索します。
+        </p>
+
+    </main>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+    <!-- App Logic -->
+    <script src="js/tomorrow_logic.js"></script>
+</body>
+
+</html>
