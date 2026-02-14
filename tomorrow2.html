@@ -68,56 +68,7 @@
 
     <!-- ===== PWA ===== -->
     <link rel="manifest" href="/manifest.json" />
-    <meta name="theme-color" content="#FF8F00" />
-
-    ...
-
-    tailwind.config = {
-    theme: {
-    extend: {
-    colors: {
-    primary: '#FF8F00', // Unified Orange
-    secondary: '#FF6F00', // Slightly Darker for gradients/hover
-    accent: '#FF8F00', // Unified Orange
-    },
-    fontFamily: {
-    sans: ['Inter', 'yakuhanjp', 'sans-serif'],
-    }
-    }
-    }
-    }
-
-    ...
-
-    .btn-start {
-    background: linear-gradient(135deg, #FF8F00 0%, #FF6F00 100%); /* Adjusted gradient */
-    color: #fff;
-    ...
-    box-shadow: 0 6px 20px rgba(255, 143, 0, .45); /* Shadow color adjusted */
-    ...
-    }
-
-    .btn-start:active {
-    transform: scale(.95);
-    box-shadow: 0 3px 10px rgba(255, 143, 0, .3);
-    }
-
-    ...
-
-    input[type="range"]::-webkit-slider-thumb {
-    ...
-    background: #FF8F00;
-    ...
-    }
-
-    ...
-
-    // 中心円
-    ctx.beginPath();
-    ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-    ctx.fillStyle = '#FF8F00';
-    ctx.fill();
-
+    <meta name="theme-color" content="#FFAB40" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <meta name="apple-mobile-web-app-title" content="グルキメ！" />
