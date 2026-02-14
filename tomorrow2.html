@@ -741,12 +741,18 @@
 
             // 検索ボタンイベント
             const btnSearch = document.getElementById('btn-search-area');
-            if (btnSearch) btnSearch.addEventListener('click', () => searchShops());
+            if (btnSearch) btnSearch.addEventListener('click', () => searchShops('btn-search-area'));
+
+            // フィルター内再検索ボタンイベント
+            const btnResearch = document.getElementById('btn-research');
+            if (btnResearch) btnResearch.addEventListener('click', () => searchShops('btn-research'));
         }
 
         // 店舗検索（フィルター適用）
-        async function searchShops() {
-            const btn = document.getElementById('btn-search-area');
+        async function searchShops(btnId = 'btn-search-area') {
+            const btn = document.getElementById(btnId);
+            if (!btn) return; // Guard clause just in case
+
             const originalText = btn.innerHTML;
             btn.innerHTML = '<span>⏳ 検索中...</span>';
             btn.disabled = true;
