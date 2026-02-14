@@ -1001,16 +1001,69 @@
                 placeholder: '場所を検索 (例: 大阪駅)',
                 collapsed: false
             })
+
+
+            // Add "Back to Current Location" Button (Custom Control)
+            L.Control.CurrentLocation = L.Control.extend({
+                onAdd: function (map) {
+                    const btn = L.DomUtil.create('div', 'leaflet-bar');
+                    btn.style.backgroundColor = 'white';
+                    btn.style.width = '44px';
+                    btn.style.height = '44px';
+                    btn.style.borderRadius = '50%';
+                    btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
+                    btn.style.cursor = 'pointer';
+                    btn.style.display = 'flex';
+                    btn.style.alignItems = 'center';
+                    btn.style.justifyContent = 'center';
+                    btn.style.marginBottom = '20px';
+                    btn.style.marginLeft = '10px';
+
+                    // Orange Crosshair Icon (SVG)
+                    btn.innerHTML = `
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="12" cy="12" r="9" stroke="#FFAB40" stroke-width="2.5"/>
+                            <path d="M12 2V22M2 12H22" stroke="#FFAB40" stroke-width="2.5" stroke-linecap="round"/>
+                            <circle cx="12" cy="12" r="3" fill="#FFAB40"/>
+                        </svg>
+                    `;
+
+                    btn.onclick = function (e) {
+                        e.stopPropagation(); // Prevent map click
+                        if (navigator.geolocation) {
+                            // Simple animation feedback
+                            btn.style.transform = 'scale(0.9)';
+                            setTimeout(() => btn.style.transform = 'scale(1)', 150);
+
+                            navigator.geolocation.getCurrentPosition(pos => {
+                                map.setView([pos.coords.latitude, pos.coords.longitude], 15);
+                            }, () => {
+                                alert('現在地を取得できませんでした。');
+                            });
+                        } else {
+                            alert('お使いのブラウザは現在地取得に対応していません。');
+                        }
+                    };
+                    return btn;
+                },
+                onRemove: function (map) { }
+            });
+
+            L.control.currentLocation = function (opts) {
+                return new L.Control.CurrentLocation(opts);
+            }
+
+            L.control.currentLocation({ position: 'bottomleft' }).addTo(map);
                 .on('markgeocode', function (e) {
-                    var bbox = e.geocode.bbox;
-                    var poly = L.polygon([
-                        bbox.getSouthEast(),
-                        bbox.getNorthEast(),
-                        bbox.getNorthWest(),
-                        bbox.getSouthWest()
-                    ]);
-                    map.fitBounds(poly.getBounds());
-                })
+                var bbox = e.geocode.bbox;
+                var poly = L.polygon([
+                    bbox.getSouthEast(),
+                    bbox.getNorthEast(),
+                    bbox.getNorthWest(),
+                    bbox.getSouthWest()
+                ]);
+                map.fitBounds(poly.getBounds());
+            })
                 .addTo(map);
         }
 
