@@ -53,252 +53,11 @@
         }
 
         #map {
-            height: 50vh;
+            height: 60vh;
             width: 100%;
             border-radius: 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             z-index: 1;
-        }
-
-        /* ---------- ルーレット ---------- */
-        #roulette-container {
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        #roulette-canvas {
-            border-radius: 50%;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
-        }
-
-        /* 三角のポインター */
-        .pointer {
-            position: absolute;
-            top: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 14px solid transparent;
-            border-right: 14px solid transparent;
-            border-top: 28px solid #212121;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .3));
-            z-index: 10;
-        }
-
-        /* ---------- START ボタン ---------- */
-        .btn-start {
-            background: linear-gradient(135deg, #FFAB40 0%, #FF8F00 100%);
-            color: #fff;
-            font-weight: 800;
-            font-size: 1.25rem;
-            letter-spacing: .05em;
-            border: none;
-            border-radius: 9999px;
-            padding: .9rem 3rem;
-            box-shadow: 0 6px 20px rgba(255, 171, 64, .45);
-            cursor: pointer;
-            transition: transform .15s, box-shadow .15s;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        .btn-start:active {
-            transform: scale(.95);
-            box-shadow: 0 3px 10px rgba(255, 171, 64, .3);
-        }
-
-        .btn-start:disabled {
-            opacity: .5;
-            cursor: not-allowed;
-        }
-
-        /* ---------- スライダー ---------- */
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 100%;
-            height: 6px;
-            background: #E0E0E0;
-            border-radius: 3px;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 22px;
-            height: 22px;
-            background: #FFAB40;
-            border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
-            cursor: pointer;
-        }
-
-        /* ---------- 結果モーダル ---------- */
-        .modal-backdrop {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, .55);
-            backdrop-filter: blur(6px);
-            z-index: 100;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity .3s;
-        }
-
-        .modal-backdrop.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-card {
-            background: #fff;
-            border-radius: 1.5rem;
-            padding: 2rem 1.5rem;
-            max-width: 360px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
-            transform: translateY(30px);
-            transition: transform .3s;
-        }
-
-        .modal-backdrop.active .modal-card {
-            transform: translateY(0);
-        }
-
-        /* ---------- 雑多 ---------- */
-        .chip {
-            display: inline-flex;
-            align-items: center;
-            gap: .35rem;
-            background: #FFF3E0;
-            color: #E65100;
-            padding: .3rem .75rem;
-            border-radius: 9999px;
-            font-size: .75rem;
-            font-weight: 600;
-        }
-
-        .fade-in {
-            animation: fadeIn .4s ease both;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 追加入力 */
-        .add-input {
-            border: 2px dashed #FFAB40;
-            border-radius: .75rem;
-            padding: .5rem .75rem;
-            outline: none;
-            font-size: .875rem;
-            width: 100%;
-            transition: border-color .2s;
-        }
-
-        .add-input:focus {
-            border-color: #FF8F00;
-        }
-
-        /* ---------- フィルターパネル ---------- */
-        .filter-panel {
-            border: 1px solid #F0F0F0;
-            border-radius: 1rem;
-            overflow: hidden;
-            transition: max-height .3s ease;
-        }
-
-        .filter-toggle {
-            cursor: pointer;
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        .filter-toggle .arrow {
-            transition: transform .2s;
-        }
-
-        .filter-toggle.open .arrow {
-            transform: rotate(180deg);
-        }
-
-        .genre-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: .25rem;
-            padding: .35rem .7rem;
-            border-radius: 9999px;
-            font-size: .75rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .15s;
-            border: 2px solid #E0E0E0;
-            background: #fff;
-            color: #616161;
-        }
-
-        .genre-chip.excluded {
-            border-color: #EF5350;
-            background: #FFEBEE;
-            color: #C62828;
-            text-decoration: line-through;
-        }
-
-        .budget-select {
-            appearance: none;
-            -webkit-appearance: none;
-            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23666'/%3E%3C/svg%3E") no-repeat right .75rem center;
-            border: 2px solid #E0E0E0;
-            border-radius: .75rem;
-            padding: .5rem 2rem .5rem .75rem;
-            font-size: .875rem;
-            outline: none;
-            transition: border-color .2s;
-            width: 100%;
-        }
-
-        .budget-select:focus {
-            border-color: #FFAB40;
-        }
-
-        .btn-search {
-            background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%);
-            color: #fff;
-            font-weight: 700;
-            font-size: .875rem;
-            border: none;
-            border-radius: 9999px;
-            padding: .6rem 1.5rem;
-            box-shadow: 0 4px 12px rgba(66, 165, 245, .35);
-            cursor: pointer;
-            transition: transform .15s, box-shadow .15s;
-        }
-
-        .btn-search:active {
-            transform: scale(.95);
-        }
-
-        .btn-search:disabled {
-            opacity: .5;
-            cursor: not-allowed;
         }
     </style>
 </head>
@@ -352,15 +111,11 @@
                 <div class="flex bg-gray-100 p-1 rounded-lg mb-4">
                     <label class="flex-1 text-center cursor-pointer">
                         <input type="radio" name="time-mode" value="lunch" class="hidden peer">
-                        <span
-                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞
-                            ランチ</span>
+                        <span class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞 ランチ</span>
                     </label>
                     <label class="flex-1 text-center cursor-pointer">
                         <input type="radio" name="time-mode" value="dinner" class="hidden peer" checked>
-                        <span
-                            class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙
-                            ディナー</span>
+                        <span class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙 ディナー</span>
                     </label>
                 </div>
 
@@ -395,8 +150,7 @@
         </div>
 
         <!-- 検索ボタン -->
-        <button id="btn-search-area"
-            class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full mb-6">
+        <button id="btn-search-area" class="bg-primary text-white font-bold py-3 px-8 rounded-full shadow-lg hover:shadow-xl transition transform active:scale-95 w-full mb-6">
             このエリアで検索 & ルーレット設定
         </button>
 
@@ -404,24 +158,21 @@
         <section id="roulette-container" class="my-4 hidden">
             <div class="pointer"></div>
             <canvas id="roulette-canvas" width="300" height="300"></canvas>
-
+            
             <!-- START ボタン -->
             <button id="btn-start" class="btn-start mt-4 mb-6" disabled>START</button>
         </section>
 
         <!-- ===== 設定パネル ===== -->
-        <section id="settings-panel"
-            class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in hidden">
+        <section id="settings-panel" class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in hidden">
             <h2 class="text-base font-bold text-accent flex items-center gap-2">⚙️ 選択肢 & 確率設定</h2>
             <div id="choices-list" class="space-y-3"></div>
             <!-- カスタム選択肢追加 -->
             <div class="pt-2 border-t border-gray-100">
                 <p class="text-xs text-gray-400 mb-2 font-semibold">＋ カスタム選択肢を追加</p>
                 <div class="flex gap-2">
-                    <input id="custom-input" type="text" class="add-input flex-1 p-2 border rounded"
-                        placeholder="例：コンビニ" maxlength="20" />
-                    <button id="btn-add-custom"
-                        class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
+                    <input id="custom-input" type="text" class="add-input flex-1 p-2 border rounded" placeholder="例：コンビニ" maxlength="20" />
+                    <button id="btn-add-custom" class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
                 </div>
             </div>
         </section>
@@ -431,8 +182,7 @@
 
     <!-- ===== 結果モーダル ===== -->
     <div id="result-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <div
-            class="bg-white rounded-2xl p-6 w-11/12 max-w-sm text-center shadow-2xl transform transition-all scale-100">
+        <div class="bg-white rounded-2xl p-6 w-11/12 max-w-sm text-center shadow-2xl transform transition-all scale-100">
             <div id="result-emoji" class="text-5xl mb-3">🎉</div>
             <h3 id="result-title" class="text-xl font-extrabold text-accent mb-1"></h3>
             <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
@@ -442,8 +192,7 @@
                 詳細を見る
             </a>
             <br />
-            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄
-                もう一回まわす</button>
+            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄 もう一回まわす</button>
         </div>
     </div>
 
