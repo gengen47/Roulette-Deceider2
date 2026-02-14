@@ -152,7 +152,7 @@
 
         .leaflet-bar a {
             background-color: #fff !important;
-            color: #FFAB40 !important;
+            color: #FF8F00 !important;
             /* Accent Color */
             width: 36px !important;
             height: 36px !important;
@@ -228,12 +228,13 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FFAB40',
-                        accent: '#212121',
+                        primary: '#FF8F00',
+                        secondary: '#FF6F00',
+                        accent: '#FF8F00',
                         surface: '#FAFAFA',
                     },
                     fontFamily: {
-                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        sans: ['Inter', 'yakuhanjp', 'sans-serif'],
                     },
                 },
             },
@@ -294,7 +295,7 @@
 
         /* ---------- START ボタン ---------- */
         .btn-start {
-            background: linear-gradient(135deg, #FFAB40 0%, #FF8F00 100%);
+            background: linear-gradient(135deg, #FF8F00 0%, #FF6F00 100%);
             color: #fff;
             font-weight: 800;
             font-size: 1.25rem;
@@ -302,7 +303,7 @@
             border: none;
             border-radius: 9999px;
             padding: .9rem 3rem;
-            box-shadow: 0 6px 20px rgba(255, 171, 64, .45);
+            box-shadow: 0 6px 20px rgba(255, 143, 0, .45);
             cursor: pointer;
             transition: transform .15s, box-shadow .15s;
             -webkit-user-select: none;
@@ -311,7 +312,7 @@
 
         .btn-start:active {
             transform: scale(.95);
-            box-shadow: 0 3px 10px rgba(255, 171, 64, .3);
+            box-shadow: 0 3px 10px rgba(255, 143, 0, .3);
         }
 
         .btn-start:disabled {
@@ -335,7 +336,7 @@
             appearance: none;
             width: 22px;
             height: 22px;
-            background: #FFAB40;
+            background: #FF8F00;
             border-radius: 50%;
             border: 2px solid #fff;
             box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
@@ -1649,7 +1650,7 @@
             // 中心円
             ctx.beginPath();
             ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-            ctx.fillStyle = '#FFAB40';
+            ctx.fillStyle = '#FF8F00';
             ctx.fill();
             ctx.beginPath();
             ctx.arc(cx, cy, 8, 0, Math.PI * 2);
