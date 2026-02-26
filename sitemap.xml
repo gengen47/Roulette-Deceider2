@@ -8,7 +8,20 @@
   </url>
   <url>
     <loc>https://gurukime.com/guide.html</loc>
+    <lastmod>2026-02-13</lastmod>
     <priority>0.8</priority>
     <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://gurukime.com/tomorrow2.html</loc>
+    <lastmod>2026-02-13</lastmod>
+    <priority>0.7</priority>
+    <changefreq>monthly</changefreq>
+  </url>
+  <url>
+    <loc>https://gurukime.com/privacy.html</loc>
+    <lastmod>2025-02-11</lastmod>
+    <priority>0.3</priority>
+    <changefreq>yearly</changefreq>
   </url>
 </urlset>
