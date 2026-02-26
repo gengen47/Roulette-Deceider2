@@ -1,0 +1,425 @@
+{
+  "viewport_meta": "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
+  "h1_text": "MISSING",
+  "title": "グルキメ！ - 近くの飲食店・ごはん選び｜ランチ・ディナー",
+  "images": [
+    {
+      "src": "http://localhost:8765/logo.svg",
+      "alt": "グルキメ！(ぐるきめ)",
+      "width": 300,
+      "height": 90,
+      "loading": "auto",
+      "srcset": "none",
+      "displayed_w": 147,
+      "displayed_h": 44
+    },
+    {
+      "src": "https://webservice.recruit.co.jp/banner/hotpepper-s.gif",
+      "alt": "Powered by ホットペッパー Webサービス",
+      "width": 135,
+      "height": 17,
+      "loading": "auto",
+      "srcset": "none",
+      "displayed_w": 127,
+      "displayed_h": 16
+    },
+    {
+      "src": "",
+      "alt": "店舗画像",
+      "width": 0,
+      "height": 0,
+      "loading": "auto",
+      "srcset": "none",
+      "displayed_w": 0,
+      "displayed_h": 0
+    },
+    {
+      "src": "https://a.imgvc.com/i/bf.png?v=1",
+      "alt": "",
+      "width": 3,
+      "height": 3,
+      "loading": "auto",
+      "srcset": "none",
+      "displayed_w": 0,
+      "displayed_h": 0
+    },
+    {
+      "src": "https://a.imgvc.com/i/bf.png?v=1",
+      "alt": "",
+      "width": 3,
+      "height": 3,
+      "loading": "auto",
+      "srcset": "none",
+      "displayed_w": 0,
+      "displayed_h": 0
+    }
+  ],
+  "links": [
+    {
+      "tag": "A",
+      "text": "",
+      "href": "http://localhost:8765/guide.html",
+      "width": 40,
+      "height": 40,
+      "top": 18
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "href": "http://localhost:8765/tomorrow2.html",
+      "width": 40,
+      "height": 40,
+      "top": 18
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🔄 この条件で再検索",
+      "href": "",
+      "width": 0,
+      "height": 0,
+      "top": 0
+    },
+    {
+      "tag": "BUTTON",
+      "text": "START",
+      "href": "",
+      "width": 167.9375,
+      "height": 58.78125,
+      "top": 530
+    },
+    {
+      "tag": "A",
+      "text": "NEW FEATURE\n                📅 明日のお店を地図で予約\n                場所を指定して探せます\n         ",
+      "href": "http://localhost:8765/tomorrow2.html",
+      "width": 448,
+      "height": 93,
+      "top": 612.78125
+    },
+    {
+      "tag": "BUTTON",
+      "text": "✕",
+      "href": "",
+      "width": 13.734375,
+      "height": 28,
+      "top": 811.78125
+    },
+    {
+      "tag": "BUTTON",
+      "text": "✕",
+      "href": "",
+      "width": 13.734375,
+      "height": 28,
+      "top": 887.78125
+    },
+    {
+      "tag": "BUTTON",
+      "text": "✕",
+      "href": "",
+      "width": 13.734375,
+      "height": 28,
+      "top": 963.78125
+    },
+    {
+      "tag": "BUTTON",
+      "text": "追加",
+      "href": "",
+      "width": 60,
+      "height": 41,
+      "top": 1062.78125
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "href": "http://webservice.recruit.co.jp/",
+      "width": 127.046875,
+      "height": 15,
+      "top": 1730.53125
+    },
+    {
+      "tag": "A",
+      "text": "ホットペッパー Webサービス",
+      "href": "http://webservice.recruit.co.jp/",
+      "width": 160.578125,
+      "height": 15,
+      "top": 1751.25
+    },
+    {
+      "tag": "A",
+      "text": "使い方ガイド",
+      "href": "http://localhost:8765/guide.html",
+      "width": 72,
+      "height": 15,
+      "top": 1771.25
+    },
+    {
+      "tag": "A",
+      "text": "プライバシーポリシー",
+      "href": "http://localhost:8765/privacy.html",
+      "width": 119.046875,
+      "height": 15,
+      "top": 1771.25
+    },
+    {
+      "tag": "A",
+      "text": "3秒でわかる！使い方ガイドを見る",
+      "href": "http://localhost:8765/guide.html",
+      "width": 187.421875,
+      "height": 16,
+      "top": 1031
+    },
+    {
+      "tag": "BUTTON",
+      "text": "",
+      "href": "",
+      "width": 40,
+      "height": 40,
+      "top": 1007
+    },
+    {
+      "tag": "A",
+      "text": "",
+      "href": "http://localhost:8765/#",
+      "width": 48,
+      "height": 24,
+      "top": 566.5
+    },
+    {
+      "tag": "BUTTON",
+      "text": "🔄\n                もう一回まわす",
+      "href": "",
+      "width": 119.53125,
+      "height": 20,
+      "top": 616.5
+    }
+  ],
+  "fonts": [
+    "https://fonts.googleapis.com/",
+    "https://fonts.gstatic.com/",
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+  ],
+  "fontFaces": [
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "400",
+      "status": "loaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "600",
+      "status": "loaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "700",
+      "status": "loaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "800",
+      "status": "loaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    },
+    {
+      "family": "Inter",
+      "style": "normal",
+      "weight": "900",
+      "status": "unloaded"
+    }
+  ],
+  "stylesheets": [
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap"
+  ],
+  "scripts": [
+    "https://www.googletagmanager.com/gtag/js?id=G-Y5P8DCKR9V",
+    "https://cdn.tailwindcss.com/",
+    "http://dalc.valuecommerce.com/app3?p=892542011&_s=http%3A%2F%2Flocalhost%3A8765%2F&vf=iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW%2FAAAAM0lEQVR4AQAnANj%2FAgEWAP9pn1v%2FUAAC%2FwLald8AHXxTALqK%2FwACkl%2BrAIC9vgA0dv8AAAAA%2F%2F8pcwtYAAAABklEQVQDACkMD41205HsAAAAAElFTkSuQmCC",
+    "http://dalc.valuecommerce.com/app3?p=892542011&_s=http%3A%2F%2Flocalhost%3A8765%2F&vf=iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW%2FAAAAM0lEQVR4AQAnANj%2FAgEWAP9pn1v%2FUAAC%2FwLald8AHXxTALqK%2FwACkl%2BrAIC9vgA0dv8AAAAA%2F%2F8pcwtYAAAABklEQVQDACkMD41205HsAAAAAElFTkSuQmCC",
+    "http://aml.valuecommerce.com/vcdal.js"
+  ],
+  "bodyFontSize": "16px",
+  "docWidth": 1920,
+  "docHeight": 1803
+}

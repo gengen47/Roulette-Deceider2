@@ -1,0 +1,125 @@
+{
+  "hasHorizontalScroll": false,
+  "docWidth": 375,
+  "viewWidth": 375,
+  "navInfo": {
+    "tag": "HEADER",
+    "class": "px-4 pt-1 pb-2 flex flex-col items-center justify-center sticky top-0 z-50 relative",
+    "visible": true
+  },
+  "buttonsTouchTargets": [
+    {
+      "text": "",
+      "w": 40,
+      "h": 40,
+      "top": 18,
+      "touchable": false
+    },
+    {
+      "text": "",
+      "w": 40,
+      "h": 40,
+      "top": 18,
+      "touchable": false
+    },
+    {
+      "text": "START",
+      "w": 167.9375,
+      "h": 58.78125,
+      "top": 530,
+      "touchable": true
+    },
+    {
+      "text": "NEW FEATURE\n                📅 明日のお店を地図で予約\n       ",
+      "w": 343,
+      "h": 93,
+      "top": 612.78125,
+      "touchable": true
+    },
+    {
+      "text": "✕",
+      "w": 13.734375,
+      "h": 28,
+      "top": 811.78125,
+      "touchable": false
+    },
+    {
+      "text": "✕",
+      "w": 13.734375,
+      "h": 28,
+      "top": 887.78125,
+      "touchable": false
+    },
+    {
+      "text": "✕",
+      "w": 13.734375,
+      "h": 28,
+      "top": 963.78125,
+      "touchable": false
+    },
+    {
+      "text": "追加",
+      "w": 60,
+      "h": 41,
+      "top": 1062.78125,
+      "touchable": false
+    },
+    {
+      "text": "",
+      "w": 127.046875,
+      "h": 15,
+      "top": 1798.78125,
+      "touchable": false
+    },
+    {
+      "text": "ホットペッパー Webサービス",
+      "w": 160.578125,
+      "h": 15,
+      "top": 1819.5,
+      "touchable": false
+    },
+    {
+      "text": "使い方ガイド",
+      "w": 72,
+      "h": 15,
+      "top": 1839.5,
+      "touchable": false
+    },
+    {
+      "text": "プライバシーポリシー",
+      "w": 119.046875,
+      "h": 15,
+      "top": 1839.5,
+      "touchable": false
+    },
+    {
+      "text": "3秒でわかる！使い方ガイドを見る",
+      "w": 187.421875,
+      "h": 16,
+      "top": 837,
+      "touchable": false
+    },
+    {
+      "text": "",
+      "w": 40,
+      "h": 40,
+      "top": 813,
+      "touchable": false
+    },
+    {
+      "text": "",
+      "w": 48,
+      "h": 24,
+      "top": 432.5,
+      "touchable": false
+    },
+    {
+      "text": "🔄\n                もう一回まわす",
+      "w": 119.53125,
+      "h": 20,
+      "top": 482.5,
+      "touchable": false
+    }
+  ],
+  "bodyFontSize": 16
+}

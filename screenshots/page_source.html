@@ -1,0 +1,1570 @@
+<!DOCTYPE html><html lang="ja"><head>
+    <!-- Google Analytics 4 -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=G-Y5P8DCKR9V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-Y5P8DCKR9V');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>グルキメ！ - 近くの飲食店・ごはん選び｜ランチ・ディナー</title>
+    <meta name="description" content="現在地周辺の飲食店を自動検索し、ルーレットでランチやディナーのお店を即決できる無料アプリです。">
+    <meta name="keywords" content="ランチ,ディナー,飲食店,ルーレット,決まらない,グルキメ,ぐるきめ,グルメ,食事ルーレット">
+    <link rel="canonical" href="https://gurukime.com/">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gurukime.com/">
+    <meta property="og:title" content="グルキメ！ランチ・ディナーの飲食店選びアプリ">
+    <meta property="og:description" content="現在地周辺の飲食店を自動検索し、ルーレットでランチやディナーのお店を即決できる無料アプリです。">
+    <meta property="og:image" content="https://gurukime.com/icons/icon-512.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://gurukime.com/">
+    <meta property="twitter:title" content="グルキメ！ランチ・ディナーの飲食店選びアプリ">
+    <meta property="twitter:description" content="現在地周辺の飲食店を自動検索し、ルーレットでランチやディナーのお店を即決できる無料アプリです。">
+    <meta property="twitter:image" content="https://gurukime.com/icons/icon-512.png">
+
+    <!-- LD-JSON -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "グルキメ！",
+      "alternateName": "ぐるきめ",
+      "operatingSystem": "Web",
+      "applicationCategory": "FoodDrinkApplication",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "JPY"
+      },
+      "description": "現在地周辺の飲食店を自動検索し、ルーレットでランチやディナーのお店を即決できる無料アプリです。",
+      "image": "https://gurukime.com/icons/icon-512.png",
+      "url": "https://gurukime.com/",
+      "author": {
+        "@type": "Person",
+        "name": "Ogura Genichirou"
+      },
+      "featureList": "ランチ検索, ディナー検索, 飲食店ルーレット, 現在地周辺検索",
+      "keywords": "ランチ, ディナー, グルメ, ルーレット, 飲食店選び"
+    }
+    </script>
+
+    <!-- ===== PWA ===== -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#FFAB40">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="グルキメ！">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+    <!-- ===== LinkSwitch プレースホルダー（バリューコマース収益化用） ===== -->
+    <!-- <script type="text/javascript" src="//tag.valuecommerce.com/linkswitch.js"></script> -->
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFAB40',
+                        accent: '#212121',
+                        surface: '#FAFAFA',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&amp;display=swap" rel="stylesheet">
+
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #FAFAFA;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* ---------- ルーレット ---------- */
+        #roulette-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #roulette-canvas {
+            border-radius: 50%;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+        }
+
+        /* 三角のポインター */
+        .pointer {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 28px solid #212121;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .3));
+            z-index: 10;
+        }
+
+        /* ---------- START ボタン ---------- */
+        .btn-start {
+            background: linear-gradient(135deg, #FFAB40 0%, #FF8F00 100%);
+            color: #fff;
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: .05em;
+            border: none;
+            border-radius: 9999px;
+            padding: .9rem 3rem;
+            box-shadow: 0 6px 20px rgba(255, 171, 64, .45);
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .btn-start:active {
+            transform: scale(.95);
+            box-shadow: 0 3px 10px rgba(255, 171, 64, .3);
+        }
+
+        .btn-start:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+
+        /* ---------- スライダー ---------- */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #E0E0E0;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            background: #FFAB40;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+            cursor: pointer;
+        }
+
+        /* ---------- 結果モーダル ---------- */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #fff;
+            border-radius: 1.5rem;
+            padding: 2rem 1.5rem;
+            max-width: 360px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, .25);
+            transform: translateY(30px);
+            transition: transform .3s;
+        }
+
+        .modal-backdrop.active .modal-card {
+            transform: translateY(0);
+        }
+
+        /* ---------- 雑多 ---------- */
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            background: #FFF3E0;
+            color: #E65100;
+            padding: .3rem .75rem;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .fade-in {
+            animation: fadeIn .4s ease both;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 追加入力 */
+        .add-input {
+            border: 2px dashed #FFAB40;
+            border-radius: .75rem;
+            padding: .5rem .75rem;
+            outline: none;
+            font-size: .875rem;
+            width: 100%;
+            transition: border-color .2s;
+        }
+
+        .add-input:focus {
+            border-color: #FF8F00;
+        }
+
+        /* ---------- フィルターパネル ---------- */
+        .filter-panel {
+            border: 1px solid #F0F0F0;
+            border-radius: 1rem;
+            overflow: hidden;
+            transition: max-height .3s ease;
+        }
+
+        .filter-toggle {
+            cursor: pointer;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .filter-toggle .arrow {
+            transition: transform .2s;
+        }
+
+        .filter-toggle.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .genre-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
+            padding: .35rem .7rem;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s;
+            border: 2px solid #E0E0E0;
+            background: #fff;
+            color: #616161;
+        }
+
+        .genre-chip.excluded {
+            border-color: #EF5350;
+            background: #FFEBEE;
+            color: #C62828;
+            text-decoration: line-through;
+        }
+
+        .budget-select {
+            appearance: none;
+            -webkit-appearance: none;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23666'/%3E%3C/svg%3E") no-repeat right .75rem center;
+            border: 2px solid #E0E0E0;
+            border-radius: .75rem;
+            padding: .5rem 2rem .5rem .75rem;
+            font-size: .875rem;
+            outline: none;
+            transition: border-color .2s;
+            width: 100%;
+        }
+
+        .budget-select:focus {
+            border-color: #FFAB40;
+        }
+
+        .btn-search {
+            background: linear-gradient(135deg, #42A5F5 0%, #1E88E5 100%);
+            color: #fff;
+            font-weight: 700;
+            font-size: .875rem;
+            border: none;
+            border-radius: 9999px;
+            padding: .6rem 1.5rem;
+            box-shadow: 0 4px 12px rgba(66, 165, 245, .35);
+            cursor: pointer;
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .btn-search:active {
+            transform: scale(.95);
+        }
+
+        .btn-search:disabled {
+            opacity: .5;
+            cursor: not-allowed;
+        }
+    </style>
+<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:Inter, Helvetica Neue, Arial, sans-serif;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}.sticky{position:sticky}.bottom-4{bottom:1rem}.left-4{left:1rem}.right-4{right:1rem}.top-0{top:0px}.top-1\/2{top:50%}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-4{margin-top:1rem;margin-bottom:1rem}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mr-3{margin-right:0.75rem}.mt-1{margin-top:0.25rem}.mt-2{margin-top:0.5rem}.mt-8{margin-top:2rem}.ml-1{margin-left:0.25rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.hidden{display:none}.h-5{height:1.25rem}.h-6{height:1.5rem}.h-3{height:0.75rem}.min-h-screen{min-height:100vh}.w-5{width:1.25rem}.w-6{width:1.5rem}.w-full{width:100%}.w-12{width:3rem}.w-3{width:0.75rem}.min-w-0{min-width:0px}.max-w-md{max-width:28rem}.flex-1{flex:1 1 0%}.flex-shrink-0{flex-shrink:0}.-translate-y-1\/2{--tw-translate-y:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.translate-y-full{--tw-translate-y:100%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.transform{transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.cursor-pointer{cursor:pointer}.list-inside{list-style-position:inside}.list-disc{list-style-type:disc}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1.25rem * var(--tw-space-y-reverse))}.self-center{align-self:center}.truncate{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-md{border-radius:0.375rem}.rounded-xl{border-radius:0.75rem}.border{border-width:1px}.border-t{border-top-width:1px}.border-gray-100{--tw-border-opacity:1;border-color:rgb(243 244 246 / var(--tw-border-opacity, 1))}.border-orange-100{--tw-border-opacity:1;border-color:rgb(255 237 213 / var(--tw-border-opacity, 1))}.border-primary\/20{border-color:rgb(255 171 64 / 0.2)}.bg-gray-100{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.bg-gray-50{--tw-bg-opacity:1;background-color:rgb(249 250 251 / var(--tw-bg-opacity, 1))}.bg-primary{--tw-bg-opacity:1;background-color:rgb(255 171 64 / var(--tw-bg-opacity, 1))}.bg-primary\/10{background-color:rgb(255 171 64 / 0.1)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.p-1{padding:0.25rem}.p-2{padding:0.5rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-6{padding:1.5rem}.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-4{padding-top:1rem;padding-bottom:1rem}.pb-2{padding-bottom:0.5rem}.pb-4{padding-bottom:1rem}.pb-8{padding-bottom:2rem}.pt-1{padding-top:0.25rem}.pt-2{padding-top:0.5rem}.text-center{text-align:center}.text-right{text-align:right}.text-2xl{font-size:1.5rem;line-height:2rem}.text-5xl{font-size:3rem;line-height:1}.text-\[10px\]{font-size:10px}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-bold{font-weight:700}.font-extrabold{font-weight:800}.font-semibold{font-weight:600}.leading-relaxed{line-height:1.625}.text-accent{--tw-text-opacity:1;color:rgb(33 33 33 / var(--tw-text-opacity, 1))}.text-gray-400{--tw-text-opacity:1;color:rgb(156 163 175 / var(--tw-text-opacity, 1))}.text-gray-500{--tw-text-opacity:1;color:rgb(107 114 128 / var(--tw-text-opacity, 1))}.text-gray-600{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.text-gray-800{--tw-text-opacity:1;color:rgb(31 41 55 / var(--tw-text-opacity, 1))}.text-primary{--tw-text-opacity:1;color:rgb(255 171 64 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-gray-300{--tw-text-opacity:1;color:rgb(209 213 219 / var(--tw-text-opacity, 1))}.underline{-webkit-text-decoration-line:underline;text-decoration-line:underline}.accent-primary{accent-color:#FFAB40}.opacity-0{opacity:0}.shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-sm{--tw-shadow:0 1px 2px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:0 1px 2px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.transition{transition-property:color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.duration-500{transition-duration:500ms}.hover\:bg-gray-100:hover{--tw-bg-opacity:1;background-color:rgb(243 244 246 / var(--tw-bg-opacity, 1))}.hover\:text-accent:hover{--tw-text-opacity:1;color:rgb(33 33 33 / var(--tw-text-opacity, 1))}.hover\:text-gray-600:hover{--tw-text-opacity:1;color:rgb(75 85 99 / var(--tw-text-opacity, 1))}.hover\:text-red-400:hover{--tw-text-opacity:1;color:rgb(248 113 113 / var(--tw-text-opacity, 1))}.hover\:shadow-md:hover{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.hover\:shadow-xl:hover{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}.peer:checked ~ .peer-checked\:bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.peer:checked ~ .peer-checked\:text-accent{--tw-text-opacity:1;color:rgb(33 33 33 / var(--tw-text-opacity, 1))}.peer:checked ~ .peer-checked\:shadow{--tw-shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 1px 3px 0 var(--tw-shadow-color), 0 1px 2px -1px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}</style><script src="http://dalc.valuecommerce.com/app3?p=892542011&amp;_s=http%3A%2F%2Flocalhost%3A8765%2F&amp;vf=iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW%2FAAAAM0lEQVR4AQAnANj%2FAgEWAP9pn1v%2FUAAC%2FwLald8AHXxTALqK%2FwACkl%2BrAIC9vgA0dv8AAAAA%2F%2F8pcwtYAAAABklEQVQDACkMD41205HsAAAAAElFTkSuQmCC" type="text/javascript" charset="UTF-8"></script><script src="http://dalc.valuecommerce.com/app3?p=892542011&amp;_s=http%3A%2F%2Flocalhost%3A8765%2F&amp;vf=iVBORw0KGgoAAAANSUhEUgAAAAMAAAADCAYAAABWKLW%2FAAAAM0lEQVR4AQAnANj%2FAgEWAP9pn1v%2FUAAC%2FwLald8AHXxTALqK%2FwACkl%2BrAIC9vgA0dv8AAAAA%2F%2F8pcwtYAAAABklEQVQDACkMD41205HsAAAAAElFTkSuQmCC" type="text/javascript" charset="UTF-8"></script></head>
+
+<body class="min-h-screen flex flex-col">
+
+    <!-- ===== ヘッダー ===== -->
+    <header class="px-4 pt-1 pb-2 flex flex-col items-center justify-center sticky top-0 z-50 relative" style="background:#FAFAFA;">
+
+        <!-- ヘルプアイコン -->
+        <a href="/guide.html" class="absolute right-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition" aria-label="使い方ガイド" vcdaldp-fin="" data-nodal="">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+        </a>
+
+        <!-- 地図アイコン (A案) -->
+        <a href="/tomorrow2.html" class="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition" aria-label="地図で探す" vcdaldp-fin="" data-nodal="">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l5.447 2.724A1 1 0 0121 18.618V7.854a1 1 0 00-1.447-.894L14 7m0 13V7"></path>
+            </svg>
+        </a>
+
+        <img src="logo.svg" alt="グルキメ！(ぐるきめ)" style="height:44px; object-fit:contain;">
+        <p class="text-xs text-gray-500 mt-1">運命のゴハン、回して決めよう！</p>
+    </header>
+
+    <!-- ===== メインコンテンツ ===== -->
+    <main class="flex-1 flex flex-col items-center px-4 pb-8">
+
+
+        <!-- ===== フィルターパネル ===== -->
+        <section class="w-full max-w-md mt-2 mb-3 filter-panel bg-white shadow-sm fade-in">
+            <div id="filter-toggle" class="filter-toggle flex items-center justify-between px-4 py-3">
+                <h2 class="text-sm font-bold text-accent flex items-center gap-2">🔍 店舗フィルター</h2>
+                <span class="arrow text-gray-400 text-xs">▼</span>
+            </div>
+            <div id="filter-body" class="px-4 pb-4" style="display:none;">
+                <!-- ジャンル除外 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">除外するジャンル（タップで除外）</p>
+                <div id="genre-chips" class="flex flex-wrap gap-2 mb-4"><span class="genre-chip" data-code="G001">🍶 居酒屋</span><span class="genre-chip" data-code="G002">🍷 ダイニングバー・バル</span><span class="genre-chip" data-code="G003">🎨 創作料理</span><span class="genre-chip" data-code="G004">🍣 和食</span><span class="genre-chip" data-code="G005">🍝 洋食</span><span class="genre-chip" data-code="G006">🇮🇹 イタリアン・フレンチ</span><span class="genre-chip" data-code="G007">🥟 中華</span><span class="genre-chip" data-code="G008">🥩 焼肉・ホルモン</span><span class="genre-chip" data-code="G017">🇰🇷 韓国料理</span><span class="genre-chip" data-code="G009">🍛 アジア・エスニック</span><span class="genre-chip" data-code="G010">🌍 各国料理</span><span class="genre-chip" data-code="G011">🎤 カラオケ・パーティ</span><span class="genre-chip" data-code="G012">🍸 バー・カクテル</span><span class="genre-chip" data-code="G013">🍜 ラーメン</span><span class="genre-chip" data-code="G016">🥞 お好み焼き・もんじゃ</span><span class="genre-chip" data-code="G014">☕ カフェ・スイーツ</span><span class="genre-chip" data-code="G015">🍴 その他グルメ</span></div>
+
+                <!-- 距離 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">📏 現在地からの距離</p>
+                <select id="distance-range" class="budget-select mb-4">
+                    <option value="1">300m以内</option>
+                    <option value="2">500m以内</option>
+                    <option value="3" selected="">1km以内</option>
+                    <option value="4">2km以内</option>
+                    <option value="5">3km以内</option>
+                </select>
+
+                <!-- ランチ/ディナー切り替え -->
+                <div class="flex bg-gray-100 p-1 rounded-lg mb-4">
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="time-mode" value="lunch" class="hidden peer" style="">
+                        <span class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌞
+                            ランチ</span>
+                    </label>
+                    <label class="flex-1 text-center cursor-pointer">
+                        <input type="radio" name="time-mode" value="dinner" class="hidden peer" checked="" style="">
+                        <span class="block py-1.5 text-sm font-bold text-gray-500 rounded-md peer-checked:bg-white peer-checked:text-accent peer-checked:shadow transition-all">🌙
+                            ディナー</span>
+                    </label>
+                </div>
+
+                <!-- 予算帯 -->
+                <p class="text-xs text-gray-400 font-semibold mb-2">💰 予算帯</p>
+                <div class="flex gap-2 mb-4">
+                    <select id="budget-min" class="budget-select flex-1">
+                        <option value="">下限なし</option>
+                    <option value="500">500円</option><option value="1000">1000円</option><option value="1500">1500円</option><option value="2000">2000円</option><option value="3000">3000円</option><option value="4000">4000円</option><option value="5000">5000円</option><option value="7000">7000円</option><option value="10000">10000円</option><option value="15000">15000円</option><option value="20000">20000円</option><option value="30000">30000円</option></select>
+                    <span class="self-center text-gray-400 text-sm font-bold">〜</span>
+                    <select id="budget-max" class="budget-select flex-1">
+                        <option value="">上限なし</option>
+                    <option value="500">500円</option><option value="1000">1000円</option><option value="1500">1500円</option><option value="2000">2000円</option><option value="3000">3000円</option><option value="4000">4000円</option><option value="5000">5000円</option><option value="7000">7000円</option><option value="10000">10000円</option><option value="15000">15000円</option><option value="20000">20000円</option><option value="30000">30000円</option></select>
+                </div>
+
+                <!-- 営業中フィルター -->
+                <div class="flex items-center gap-2 mb-4">
+                    <label class="flex items-center gap-2 cursor-pointer text-sm font-semibold text-accent">
+                        <input type="checkbox" id="filter-open-now" class="w-5 h-5 rounded accent-primary" style="">
+                        🟢 営業中の店舗のみ表示
+                    </label>
+                </div>
+
+                <!-- 再検索ボタン -->
+                <button id="btn-research" class="btn-search w-full">🔄 この条件で再検索</button>
+            </div>
+        </section>
+
+        <!-- ステータス -->
+        <div id="status-bar" class="w-full max-w-md mb-2 text-center text-sm text-gray-500 fade-in">⚠️ 位置情報の取得に失敗しました。ブラウザの位置情報を許可してリロードしてください。</div>
+
+        <!-- ルーレット -->
+        <section id="roulette-container" class="my-4">
+            <div class="pointer"></div>
+            <canvas id="roulette-canvas" width="300" height="300" style="width: 300px; height: 300px;"></canvas>
+        </section>
+
+        <!-- START ボタン -->
+        <button id="btn-start" class="btn-start mt-2 mb-6">START</button>
+
+        <!-- 明日のグルメバナー (C案) -->
+        <a href="/tomorrow2.html" class="block w-full max-w-md mx-auto mb-6 p-4 bg-white rounded-2xl shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition fade-in" vcdaldp-fin="" data-nodal="">
+            <div class="flex flex-col">
+                <span class="text-xs font-bold text-primary mb-1">NEW FEATURE</span>
+                <h3 class="font-bold text-accent text-sm">📅 明日のお店を地図で予約</h3>
+                <p class="text-[10px] text-gray-500 mt-1">場所を指定して探せます</p>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-full">
+                <span class="text-2xl">🗺️</span>
+            </div>
+        </a>
+
+        <!-- ===== 設定パネル ===== -->
+        <section id="settings-panel" class="w-full max-w-md bg-white rounded-2xl shadow-md p-5 space-y-5 fade-in">
+            <h2 class="text-base font-bold text-accent flex items-center gap-2">⚙️ 選択肢 &amp; 確率設定</h2>
+
+            <!-- 選択肢リスト（動的生成） -->
+            <div id="choices-list" class="space-y-3"><div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl transition hover:bg-gray-100">
+        <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
+          <input type="checkbox" data-id="0" class="w-5 h-5 rounded accent-primary" style="">
+          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#FFAB40"></span>
+        </label>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-accent truncate">🏪 コンビニ</p>
+          <div class="flex items-center gap-2 mt-1">
+            <input type="range" min="1" max="10" value="5" data-id="0" class="flex-1" style="accent-color: rgb(255, 171, 64);">
+            <span class="text-xs font-bold w-12 text-right" style="color:#FFAB40">0%</span>
+          </div>
+        </div>
+        <button data-remove="0" class="text-gray-300 hover:text-red-400 text-lg transition ml-1">✕</button>
+      </div><div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl transition hover:bg-gray-100">
+        <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
+          <input type="checkbox" data-id="1" class="w-5 h-5 rounded accent-primary" style="">
+          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#FF7043"></span>
+        </label>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-accent truncate">🍳 自炊</p>
+          <div class="flex items-center gap-2 mt-1">
+            <input type="range" min="1" max="10" value="5" data-id="1" class="flex-1" style="accent-color: rgb(255, 112, 67);">
+            <span class="text-xs font-bold w-12 text-right" style="color:#FF7043">0%</span>
+          </div>
+        </div>
+        <button data-remove="1" class="text-gray-300 hover:text-red-400 text-lg transition ml-1">✕</button>
+      </div><div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl transition hover:bg-gray-100">
+        <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
+          <input type="checkbox" data-id="2" class="w-5 h-5 rounded accent-primary" style="">
+          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:#AB47BC"></span>
+        </label>
+        <div class="flex-1 min-w-0">
+          <p class="text-sm font-semibold text-accent truncate">🧘 断食（食べない）</p>
+          <div class="flex items-center gap-2 mt-1">
+            <input type="range" min="1" max="10" value="5" data-id="2" class="flex-1" style="accent-color: rgb(171, 71, 188);">
+            <span class="text-xs font-bold w-12 text-right" style="color:#AB47BC">0%</span>
+          </div>
+        </div>
+        <button data-remove="2" class="text-gray-300 hover:text-red-400 text-lg transition ml-1">✕</button>
+      </div></div>
+
+            <!-- カスタム選択肢追加 -->
+            <div class="pt-2 border-t border-gray-100">
+                <p class="text-xs text-gray-400 mb-2 font-semibold">＋ カスタム選択肢を追加</p>
+                <div class="flex gap-2">
+                    <input id="custom-input" type="text" class="add-input flex-1" placeholder="例：マクドナルド" maxlength="20" style="">
+                    <button id="btn-add-custom" class="bg-primary text-white font-bold px-4 py-2 rounded-xl text-sm shadow hover:shadow-md transition">追加</button>
+                </div>
+            </div>
+        </section>
+        
+
+        <!-- ===== SEO用コンテンツエリア ===== -->
+        <section class="w-full max-w-md bg-white rounded-2xl shadow-md p-6 mt-8 mb-4 fade-in">
+            <h2 class="text-lg font-bold text-accent mb-3 text-center">近くのごはんを3秒で決める！<br>運命の食事ルーレット</h2>
+            <div class="text-sm text-gray-600 leading-relaxed space-y-3">
+                <p>
+                    「今日のごはん、何にしよう？」と迷っているあなたへ。<br>
+                    <strong>グルキメ！</strong>は、現在地から<strong>近くの飲食店</strong>を瞬時に検索し、ランチやディナーのお店をルーレットで決める無料Webアプリです。
+                </p>
+                <p>
+                    Googleマップで「近くの美味しいお店」を検索しても、候補が多すぎて選べないことはありませんか？<br>
+                    グルキメ！なら、周辺のレストラン・カフェ・居酒屋から自動で候補をピックアップ。優柔不断なあなたの代わりに、運命の一食をズバッと決定します。
+                </p>
+                <div class="bg-primary/10 p-3 rounded-lg border border-primary/20">
+                    <h3 class="font-bold text-accent mb-1 text-xs">こんな時におすすめ</h3>
+                    <ul class="list-disc list-inside text-xs space-y-1">
+                        <li>職場の近くでランチを開拓したい時</li>
+                        <li>友達とのディナーで店が決まらない時</li>
+                        <li>旅先で現在地周辺のグルメを探したい時</li>
+                        <li>いつも同じ店ばかりでマンネリ気味な時</li>
+                    </ul>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">
+                    ※ホットペッパーグルメのAPIを使用し、最新の店舗情報を取得しています。
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <!-- ===== フッター ===== -->
+    <footer class="py-4 text-center text-xs text-gray-400" style="background:#FAFAFA;">
+        <a href="http://webservice.recruit.co.jp/" target="_blank" rel="noopener" vcdaldp-fin="" data-nodal="">
+            <img src="https://webservice.recruit.co.jp/banner/hotpepper-s.gif" alt="Powered by ホットペッパー Webサービス" style="height:16px; display:inline-block; vertical-align:middle;">
+        </a>
+        <p class="mt-1">Powered by <a href="http://webservice.recruit.co.jp/" target="_blank" rel="noopener" class="text-gray-400 underline" vcdaldp-fin="" data-nodal="">ホットペッパー Webサービス</a></p>
+        <p class="mt-1"><a href="/guide.html" class="text-gray-400 underline" vcdaldp-fin="" data-nodal="">使い方ガイド</a> ｜ <a href="/privacy.html" class="text-gray-400 underline" vcdaldp-fin="" data-nodal="">プライバシーポリシー</a></p>
+    </footer>
+
+    <!-- ===== 初回訪問バナー ===== -->
+    <div id="guide-banner" class="fixed bottom-4 left-4 right-4 bg-white p-4 rounded-xl shadow-2xl z-50 transform transition-all duration-500 flex items-center justify-between border border-orange-100 max-w-md mx-auto">
+        <div class="flex items-center">
+            <span class="text-2xl mr-3">📖</span>
+            <div>
+                <p class="font-bold text-sm text-gray-800">はじめての方へ</p>
+                <a href="/guide.html" class="text-xs text-accent underline mt-1 block" vcdaldp-fin="" data-nodal="">3秒でわかる！使い方ガイドを見る</a>
+            </div>
+        </div>
+        <button onclick="closeGuideBanner()" class="p-2 text-gray-400 hover:text-gray-600 focus:outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    </div>
+
+    <!-- ===== 結果モーダル ===== -->
+    <div id="result-modal" class="modal-backdrop">
+        <div class="modal-card">
+            <div id="result-emoji" class="text-5xl mb-3">🎉</div>
+            <h3 id="result-title" class="text-xl font-extrabold text-accent mb-1"></h3>
+            <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
+            <img id="result-img" class="w-full rounded-xl mb-4 hidden" alt="店舗画像">
+            <a id="result-action" href="#" target="_blank" rel="noopener" class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition" vcdaldp-fin="" data-nodal="">
+            </a>
+            <br>
+            <!-- リトライ（将来的に広告を挟める設計） -->
+            <!-- ここに広告スロットを挿入可能 -->
+            <button id="btn-retry" class="mt-2 text-gray-400 underline text-sm hover:text-accent transition">🔄
+                もう一回まわす</button>
+        </div>
+    </div>
+
+    <!-- ============================= JavaScript ============================= -->
+    <script>
+        // =====================================================================
+        //  設定
+        // =====================================================================
+        const IS_DEBUG = false; // true: モックデータモード / false: 本番（ホットペッパーAPI）
+
+        // ★本番時はここにAPIキーを設定
+        const HP_API_KEY = 'f008a1b21c675ccc';
+
+        // =====================================================================
+        //  モックデータ
+        // =====================================================================
+        const MOCK_SHOPS = [
+            { name: '焼肉キング 渋谷店', catch: '食べ放題が大人気！', genre: '焼肉', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'スシロー 新宿東口店', catch: '回転寿司ならここ', genre: '寿司', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'サイゼリヤ 池袋店', catch: 'コスパ最強イタリアン', genre: 'イタリアン', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'CoCo壱番屋 目黒店', catch: 'カレーの王道', genre: 'カレー', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: '天下一品 六本木店', catch: 'こってりラーメン', genre: 'ラーメン', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: '大戸屋 品川店', catch: 'ちゃんとゴハン', genre: '和食', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: 'マクドナルド 東京駅店', catch: 'スマイル0円！', genre: 'ファストフード', photo: '', url: 'https://www.hotpepper.jp/' },
+            { name: '鳥貴族 恵比寿店', catch: '全品均一価格！', genre: '居酒屋', photo: '', url: 'https://www.hotpepper.jp/' },
+        ];
+
+        // デフォルトカスタム選択肢
+        const DEFAULT_CUSTOM = [
+            { name: 'コンビニ', emoji: '🏪' },
+            { name: '自炊', emoji: '🍳' },
+            { name: '断食（食べない）', emoji: '🧘' },
+        ];
+
+        // ジャンルマスタ
+        const GENRES = [
+            { code: 'G001', name: '居酒屋', emoji: '🍶' },
+            { code: 'G002', name: 'ダイニングバー・バル', emoji: '🍷' },
+            { code: 'G003', name: '創作料理', emoji: '🎨' },
+            { code: 'G004', name: '和食', emoji: '🍣' },
+            { code: 'G005', name: '洋食', emoji: '🍝' },
+            { code: 'G006', name: 'イタリアン・フレンチ', emoji: '🇮🇹' },
+            { code: 'G007', name: '中華', emoji: '🥟' },
+            { code: 'G008', name: '焼肉・ホルモン', emoji: '🥩' },
+            { code: 'G017', name: '韓国料理', emoji: '🇰🇷' },
+            { code: 'G009', name: 'アジア・エスニック', emoji: '🍛' },
+            { code: 'G010', name: '各国料理', emoji: '🌍' },
+            { code: 'G011', name: 'カラオケ・パーティ', emoji: '🎤' },
+            { code: 'G012', name: 'バー・カクテル', emoji: '🍸' },
+            { code: 'G013', name: 'ラーメン', emoji: '🍜' },
+            { code: 'G016', name: 'お好み焼き・もんじゃ', emoji: '🥞' },
+            { code: 'G014', name: 'カフェ・スイーツ', emoji: '☕' },
+            { code: 'G015', name: 'その他グルメ', emoji: '🍴' },
+        ];
+
+        // 予算マスタ（安い順）
+        // 予算マスタ（安い順）
+        // ※値はフィルタリング用に数値を持たせる
+        const BUDGETS = [
+            { code: 'B009', name: '〜500円', min: 0, max: 500 },
+            { code: 'B010', name: '501〜1000円', min: 501, max: 1000 },
+            { code: 'B011', name: '1001〜1500円', min: 1001, max: 1500 },
+            { code: 'B001', name: '1501〜2000円', min: 1501, max: 2000 },
+            { code: 'B002', name: '2001〜3000円', min: 2001, max: 3000 },
+            { code: 'B003', name: '3001〜4000円', min: 3001, max: 4000 },
+            { code: 'B008', name: '4001〜5000円', min: 4001, max: 5000 },
+            { code: 'B004', name: '5001〜7000円', min: 5001, max: 7000 },
+            { code: 'B005', name: '7001〜10000円', min: 7001, max: 10000 },
+            { code: 'B006', name: '10001〜15000円', min: 10001, max: 15000 },
+            { code: 'B012', name: '15001〜20000円', min: 15001, max: 20000 },
+            { code: 'B013', name: '20001〜30000円', min: 20001, max: 30000 },
+            { code: 'B014', name: '30001円〜', min: 30001, max: 999999 },
+        ];
+
+        // フィルター状態
+        let excludedGenres = new Set(); // 除外するジャンルコード
+        let userLocation = null;        // { lat, lng }
+
+        // ルーレットのカラーパレット
+        const PALETTE = [
+            '#FFAB40', '#FF7043', '#AB47BC', '#42A5F5', '#66BB6A',
+            '#FFEE58', '#EF5350', '#26C6DA', '#8D6E63', '#78909C',
+            '#EC407A', '#7E57C2', '#29B6F6', '#9CCC65', '#FFA726',
+        ];
+
+        // =====================================================================
+        //  State
+        // =====================================================================
+        let choices = [];   // { id, name, type:'shop'|'custom', weight, enabled, data? }
+        let spinning = false;
+        let idCounter = 0;
+
+        // DOM
+        const canvas = document.getElementById('roulette-canvas');
+        const ctx = canvas.getContext('2d');
+        const btnStart = document.getElementById('btn-start');
+        const choicesList = document.getElementById('choices-list');
+        const statusBar = document.getElementById('status-bar');
+        const modal = document.getElementById('result-modal');
+        const customInput = document.getElementById('custom-input');
+        const btnAdd = document.getElementById('btn-add-custom');
+
+        // HiDPI
+        const dpr = window.devicePixelRatio || 1;
+        const SIZE = 300;
+        canvas.width = SIZE * dpr;
+        canvas.height = SIZE * dpr;
+        canvas.style.width = SIZE + 'px';
+        canvas.style.height = SIZE + 'px';
+        ctx.scale(dpr, dpr);
+
+        // =====================================================================
+        //  初期化
+        // =====================================================================
+        async function init() {
+            // フィルターUIを初期化
+            initFilterUI();
+
+            try {
+                if (IS_DEBUG) {
+                    statusBar.textContent = '🛠️ デバッグモード（モックデータ使用）';
+                    loadShops(MOCK_SHOPS);
+                } else {
+                    statusBar.textContent = '📍 位置情報を取得しています…';
+                    const pos = await getLocation();
+                    userLocation = pos;
+                    await searchShops();
+                }
+            } catch (e) {
+                console.error(e);
+                statusBar.textContent = '⚠️ 位置情報の取得に失敗しました。ブラウザの位置情報を許可してリロードしてください。';
+            }
+
+            // デフォルトカスタム選択肢
+            DEFAULT_CUSTOM.forEach(c => {
+                addChoice(c.name, 'custom', 5, false, { emoji: c.emoji });
+            });
+
+            renderChoicesUI();
+            drawRoulette();
+            btnStart.disabled = false;
+        }
+
+        // 店舗検索（フィルター適用）
+        async function searchShops() {
+            statusBar.textContent = '周辺の飲食店を検索中…';
+            btnStart.disabled = true;
+
+            // フィルター条件を収集
+            const budgetMin = document.getElementById('budget-min').value;
+            const budgetMax = document.getElementById('budget-max').value;
+            const includedGenres = GENRES
+                .filter(g => !excludedGenres.has(g.code))
+                .map(g => g.code);
+
+            // ランチモード判定
+            const isLunchMode = document.querySelector('input[name="time-mode"]:checked').value === 'lunch';
+            let strictMaxPrice = 999999; // クライアントフィルタ用
+
+            // ユーザー指定予算の上限を取得
+            if (budgetMax) {
+                strictMaxPrice = parseInt(budgetMax);
+            }
+
+            // 予算フィルタ: API側では絞り込まず、取得後にテキスト解析で判定する（APIの0件問題回避 & コード未設定店舗への対応）
+            // そのため、budgetCodes の生成は不要。
+
+            const rangeVal = document.getElementById('distance-range').value;
+            const openNowChecked = document.getElementById('filter-open-now').checked;
+
+            try {
+                // API呼び出し: budgetCodesの代わりに空配列を渡す（APIフィルタ無効化）
+                // ランチモード時は isLunchMode=true を渡して lunch=1 パラメータを付与
+                let shops = await fetchShops(userLocation.lat, userLocation.lng, includedGenres, [], rangeVal, openNowChecked, isLunchMode);
+
+                // 予算での厳密なフィルタリング
+                if (budgetMax || budgetMin) {
+                    // 下限を取得
+                    let strictMinPrice = 0;
+                    if (budgetMin) strictMinPrice = parseInt(budgetMin);
+
+                    if (isLunchMode) {
+                        // === ランチモード: 「lunch」フィールドの価格解析 ===
+                        shops = shops.filter(s => {
+                            const text = s.lunch;
+                            // 厳格フィルタ: 情報なし(null/undefined/空文字)の場合は除外する
+                            if (!text) return false;
+
+                            // Regex修正: 桁区切りがあってもなくても、4桁以上の数値も正しく抽出できるように変更
+                            // 旧: /(\d{1,3}(?:,\d{3})*)/ -> "2001" を "200" と誤認していた
+                            // 新: /(\d[\d,]*)/ -> 数字とカンマの連続を抽出
+                            const match = text.match(/(\d[\d,]*)/);
+                            if (match) {
+                                const price = parseInt(match[1].replace(/,/g, ''));
+                                return price <= strictMaxPrice && price >= strictMinPrice;
+                            }
+
+                            // 救済ロジック: 「ランチあり」だが価格不明な場合、ディナー予算から推定する
+                            // 誤爆防止: "～あり" のような文中の記述は除外するため、先頭一致のみを対象とする
+                            if (text.startsWith('あり')) {
+                                // ディナー予算情報を取得
+                                let budgetText = s.budget;
+                                if ((!budgetText || budgetText === '') && s.budgetAverage) {
+                                    budgetText = s.budgetAverage;
+                                }
+
+                                if (budgetText) {
+                                    const budgetMatch = budgetText.match(/(\d[\d,]*)/);
+                                    if (budgetMatch) {
+                                        let dinnerPrice = parseInt(budgetMatch[1].replace(/,/g, ''));
+                                        // ランチはディナーより安いと仮定し、一律 -1000円 する (最低0円)
+                                        let estimatedLunchPrice = Math.max(0, dinnerPrice - 1000);
+                                        return estimatedLunchPrice <= strictMaxPrice && estimatedLunchPrice >= strictMinPrice;
+                                    }
+                                }
+                            }
+
+                            // 厳格フィルタ: 解析不能なフォーマット（例: "なし"）の場合は除外する
+                            return false;
+                        });
+                    } else {
+                        // === ディナーモード: 「budget」(テキスト)の価格解析 ===
+                        // コード(budgetCode)は設定されていない店舗があるため、テキスト(name)を解析する
+                        shops = shops.filter(s => {
+                            // s.budget は "2001～3000円" のような文字列
+                            // s.budgetAverage は "2000円～2500円" のような文字列
+                            // 両方チェックし、情報がある方を使う
+                            let text = s.budget;
+                            if ((!text || text === '') && s.budgetAverage) {
+                                text = s.budgetAverage;
+                            }
+
+                            // 厳格フィルタ: 情報なしの場合は除外する
+                            if (!text) return false;
+
+                            const match = text.match(/(\d[\d,]*)/);
+                            if (match) {
+                                const price = parseInt(match[1].replace(/,/g, ''));
+                                // 抽出した金額（帯域の下限）が、ユーザー指定の範囲内か判定
+                                return price <= strictMaxPrice && price >= strictMinPrice;
+                            }
+                            // 厳格フィルタ: 解析不能な場合は除外する
+                            return false;
+                        });
+                    }
+                }
+
+                // ジャンル除外フィルター（API側で漏れるサブジャンル登録の店舗を除外）
+                if (excludedGenres.size > 0) {
+                    shops = shops.filter(s => !excludedGenres.has(s.genreCode));
+                }
+
+                // 営業中フィルター（クライアント側テキスト解析）
+                if (openNowChecked) {
+                    const filtered = shops.filter(s => isOpenNow(s));
+                    shops = filtered;
+                }
+
+                // 既存の店舗選択肢をクリア
+                choices = choices.filter(c => c.type !== 'shop');
+                const pickCount = loadShops(shops);
+                renderChoicesUI();
+                drawRoulette();
+                statusBar.textContent = `📍 周辺 ${shops.length} 店舗からランダム${pickCount}店舗を選出`;
+            } catch (e) {
+                console.error(e);
+                statusBar.textContent = '⚠️ 店舗の検索に失敗しました。条件を変えて再検索してください。';
+            }
+            btnStart.disabled = false;
+        }
+
+        // =====================================================================
+        //  Geolocation
+        // =====================================================================
+        function getLocation() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) return reject('Geolocation not supported');
+                navigator.geolocation.getCurrentPosition(
+                    pos => resolve({ lat: pos.coords.latitude, lng: pos.coords.longitude }),
+                    err => reject(err),
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            });
+        }
+
+        // =====================================================================
+        //  ホットペッパーAPI（Vercel Serverless Function経由）
+        // =====================================================================
+        async function fetchShops(lat, lng, genreCodes = [], budgetCodes = [], range = '3', openNow = false, lunch = false) {
+            let params = `lat=${lat}&lng=${lng}&range=${range}&count=100`;
+
+            // ジャンル指定
+            if (genreCodes.length > 0 && genreCodes.length < GENRES.length) {
+                params += `&genre=${genreCodes.join(',')}`;
+            }
+            // 予算指定
+            if (budgetCodes.length > 0) {
+                params += `&budget=${budgetCodes.join(',')}`;
+            }
+            // 営業中フィルター（サーバーサイド処理用フラグ）
+            if (openNow) {
+                params += '&open_now=true';
+            }
+            // ランチ営業あり（サーバーサイド処理用フラグ）
+            if (lunch) {
+                params += '&lunch=1';
+            }
+
+            try {
+                const response = await fetch(`/api/shops?${params}`);
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                const data = await response.json();
+
+                if (data.results && data.results.shop && data.results.shop.length > 0) {
+                    return data.results.shop.map(s => ({
+                        name: s.name,
+                        catch: s.catch || '',
+                        genre: s.genre ? s.genre.name : '',
+                        genreCode: s.genre ? s.genre.code : '',
+                        photo: s.photo && s.photo.pc ? s.photo.pc.l : '',
+                        url: s.urls ? s.urls.pc : '',
+                        budget: s.budget ? s.budget.name : '',
+                        budgetAverage: s.budget ? s.budget.average : '', // クライアント側解析用
+                        lunch: s.lunch || '', // ランチ予算テキスト
+                        open: s.open || '',
+                        close: s.close || '',
+                    }));
+                }
+                return [];
+            } catch (e) {
+                console.error('Fetch shops error:', e);
+                throw e;
+            }
+        }
+
+        // =====================================================================
+        // 日本の祝日（2025-2026）
+        const HOLIDAYS = [
+            '2025-01-01', '2025-01-13', '2025-02-11', '2025-02-23', '2025-02-24', '2025-03-20', '2025-04-29', '2025-05-03', '2025-05-04', '2025-05-05', '2025-05-06', '2025-07-21', '2025-08-11', '2025-09-15', '2025-09-23', '2025-10-13', '2025-11-03', '2025-11-23', '2025-11-24',
+            '2026-01-01', '2026-01-12', '2026-02-11', '2026-02-23', '2026-03-20', '2026-04-29', '2026-05-03', '2026-05-04', '2026-05-05', '2026-05-06', '2026-07-20', '2026-08-11', '2026-09-21', '2026-09-23', '2026-10-12', '2026-11-03', '2026-11-23',
+        ];
+
+        function isJapaneseHoliday(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return HOLIDAYS.includes(`${y}-${m}-${d}`);
+        }
+
+        // =====================================================================
+        //  営業中判定（第2層: 定休日 + 第3層: テキスト解析）
+        // =====================================================================
+        function isOpenNow(shop) {
+            if (!shop.open) return false; // データなしは除外（安全側）
+
+            const now = new Date();
+            const dayNames = ['日', '月', '火', '水', '木', '金', '土'];
+            const todayDay = dayNames[now.getDay()];
+            const isHoliday = isJapaneseHoliday(now);
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+
+            // 祝日の場合の曜日扱い：
+            // まず「祝」または「祝日」を含むブロックを探し、あればその時間を採用する。
+            // なければ、通常の曜日（水曜日なら「水」）として振る舞う。
+
+            // 定休日チェック（簡易）
+            // ※「祝日は営業」などの例外があるため、close文字列に「祝」が含まれない限り、
+            //   祝日は一旦定休日チェックをスルーしてopenテキスト解析に任せる戦略をとる。
+            if (shop.close && shop.close !== 'なし') {
+                // 祝日なら、closeに「祝」が含まれていなければセーフ
+                if (isHoliday) {
+                    if (shop.close.includes('祝') || shop.close.includes('祝日')) return false;
+                } else {
+                    // 平日なら通常通り
+                    if (shop.close.includes(todayDay)) return false;
+                }
+            }
+
+            // 第3層: 営業時間テキスト解析
+            // 優先度: 祝日(もし今日が祝日なら) > 通常曜日
+            let todayBlock = null;
+            if (isHoliday) {
+                todayBlock = extractTodayBlock(shop.open, '祝');
+            }
+            if (!todayBlock) {
+                todayBlock = extractTodayBlock(shop.open, todayDay);
+            }
+
+            // 今日のブロックから時間パターンを抽出
+            const targetText = todayBlock || shop.open; // ブロック特定できなければ全体
+            const timePattern = /(\d{1,2}):(\d{2})\s*[～〜~]\s*(?:翌)?\s*(\d{1,2}):(\d{2})/g;
+            let match;
+            let hasTimeData = false;
+
+            while ((match = timePattern.exec(targetText)) !== null) {
+                hasTimeData = true;
+                let openMin = parseInt(match[1]) * 60 + parseInt(match[2]);
+                let closeMin = parseInt(match[3]) * 60 + parseInt(match[4]);
+
+                // 深夜跨ぎ対応（翌0:00 や 25:00 など）
+                if (closeMin <= openMin) closeMin += 24 * 60;
+                let checkMin = nowMin;
+                if (checkMin < openMin && openMin > 12 * 60) checkMin += 24 * 60;
+
+                if (checkMin >= openMin && checkMin <= closeMin) return true;
+            }
+
+            // 時間データがパースできた → 範囲外なので営業外
+            // 時間データがパースできなかった → 判定不能なので除外（安全側）
+            return false;
+        }
+
+        // 曜日ブロック抽出: "月～金: 11:00～14:00 ... 土: 18:00～22:00" → 今日のブロックを返す
+        function extractTodayBlock(text, today) {
+            // 曜日範囲パターン: "月～金" "火～土" "月～日" など + "祝"対応
+            const dayOrder = '月火水木金土日祝'; // 祝を追加
+            const todayIdx = dayOrder.indexOf(today);
+            if (todayIdx === -1) return null; // "祝"以外の不明な文字
+
+            // テキストを曜日ブロックに分割（「月～金、祝前日:」のようなパターンで区切る）
+            // "祝"や"祝日"もキャプチャするため、正規表現を拡張
+            const blockPattern = /([月火水木金土日祝](?:[～〜~][月火水木金土日祝])?(?:[、,][月火水木金土日祝](?:[～〜~][月火水木金土日祝])?)*(?:[、,](?:祝日|祝前日))*)\s*[:：]/g;
+            let blockMatch;
+            let bestBlock = null;
+
+            while ((blockMatch = blockPattern.exec(text)) !== null) {
+                const daySpec = blockMatch[1];
+                if (isDayInSpec(daySpec, today, dayOrder)) {
+                    // このブロックの開始位置から次のブロックまでのテキストを取得
+                    const startPos = blockMatch.index + blockMatch[0].length;
+                    // 次のブロックまたはテキスト末尾まで
+                    blockPattern.lastIndex = startPos; // 一時的に進める
+                    const nextMatch = blockPattern.exec(text);
+                    const endPos = nextMatch ? nextMatch.index : text.length;
+                    blockPattern.lastIndex = startPos; // 元に戻す
+                    bestBlock = text.substring(startPos, endPos);
+                }
+            }
+            return bestBlock;
+        }
+
+        // 曜日指定に今日が含まれるか判定
+        function isDayInSpec(spec, today, dayOrder) {
+            // "祝日" という文字列が含まれていて、todayが "祝" ならヒット
+            if (today === '祝' && (spec.includes('祝日') || spec.includes('祝'))) return true;
+
+            const todayIdx = dayOrder.indexOf(today);
+            if (todayIdx === -1) return false;
+
+            // 範囲指定: "月～金"
+            const rangePattern = /([月火水木金土日])[～〜~]([月火水木金土日])/g;
+            let rm;
+            while ((rm = rangePattern.exec(spec)) !== null) {
+                const startIdx = dayOrder.indexOf(rm[1]);
+                const endIdx = dayOrder.indexOf(rm[2]);
+                if (startIdx !== -1 && endIdx !== -1) {
+                    if (startIdx <= endIdx) {
+                        if (todayIdx >= startIdx && todayIdx <= endIdx) return true;
+                    } else {
+                        // 土～月 のような跨ぎ
+                        if (todayIdx >= startIdx || todayIdx <= endIdx) return true;
+                    }
+                }
+            }
+            // 個別指定: "土" "日"
+            if (spec.includes(today)) return true;
+            return false;
+        }
+
+        // =====================================================================
+        //  フィルターUI初期化
+        // =====================================================================
+        function initFilterUI() {
+            // 時間帯によるランチ/ディナー自動選択
+            // 04:00 〜 15:59 -> ランチ
+            // 16:00 〜 03:59 -> ディナー
+            const now = new Date();
+            const hour = now.getHours();
+            const isLunchTime = (hour >= 4 && hour < 16);
+
+            if (isLunchTime) {
+                document.querySelector('input[name="time-mode"][value="lunch"]').checked = true;
+            } else {
+                document.querySelector('input[name="time-mode"][value="dinner"]').checked = true;
+            }
+
+            const chipsContainer = document.getElementById('genre-chips');
+            const budgetMinSel = document.getElementById('budget-min');
+            const budgetMaxSel = document.getElementById('budget-max');
+            const filterToggle = document.getElementById('filter-toggle');
+            const filterBody = document.getElementById('filter-body');
+            const btnResearch = document.getElementById('btn-research');
+
+            // ジャンルチップ生成
+            GENRES.forEach(g => {
+                const chip = document.createElement('span');
+                chip.className = 'genre-chip';
+                chip.dataset.code = g.code;
+                chip.textContent = `${g.emoji} ${g.name}`;
+                chip.addEventListener('click', () => {
+                    if (excludedGenres.has(g.code)) {
+                        excludedGenres.delete(g.code);
+                        chip.classList.remove('excluded');
+                    } else {
+                        excludedGenres.add(g.code);
+                        chip.classList.add('excluded');
+                    }
+                });
+                chipsContainer.appendChild(chip);
+            });
+
+            // 予算セレクト生成（金額ベース）
+            // 選択肢: 500, 1000, 1500, 2000, 3000, 5000, 10000, 15000, 30000
+            const priceOptions = [
+                { val: '500', label: '500円' },
+                { val: '1000', label: '1000円' },
+                { val: '1500', label: '1500円' },
+                { val: '2000', label: '2000円' },
+                { val: '3000', label: '3000円' },
+                { val: '4000', label: '4000円' },
+                { val: '5000', label: '5000円' },
+                { val: '7000', label: '7000円' },
+                { val: '10000', label: '10000円' },
+                { val: '15000', label: '15000円' },
+                { val: '20000', label: '20000円' },
+                { val: '30000', label: '30000円' },
+            ];
+
+            priceOptions.forEach(opt => {
+                const opt1 = new Option(opt.label, opt.val);
+                const opt2 = new Option(opt.label, opt.val);
+                budgetMinSel.appendChild(opt1);
+                budgetMaxSel.appendChild(opt2);
+            });
+
+            // トグル開閉
+            filterToggle.addEventListener('click', () => {
+                const isOpen = filterBody.style.display !== 'none';
+                filterBody.style.display = isOpen ? 'none' : 'block';
+                filterToggle.classList.toggle('open', !isOpen);
+            });
+
+            // 再検索ボタン
+            btnResearch.addEventListener('click', async () => {
+                if (!userLocation && !IS_DEBUG) {
+                    statusBar.textContent = '⚠️ 位置情報が未取得です。';
+                    return;
+                }
+
+                // ローディング状態に切り替え
+                btnResearch.disabled = true;
+                btnResearch.textContent = '⏳ 検索中…';
+                btnResearch.style.opacity = '0.5';
+                btnResearch.style.pointerEvents = 'none';
+
+                try {
+                    if (IS_DEBUG) {
+                        // デバッグモード: モックデータからジャンルフィルター
+                        choices = choices.filter(c => c.type !== 'shop');
+                        const filtered = MOCK_SHOPS.filter(s => !excludedGenres.has(s.genreCode));
+                        loadShops(filtered.length > 0 ? filtered : MOCK_SHOPS);
+                        renderChoicesUI();
+                        drawRoulette();
+                        statusBar.textContent = '🛠️ モックデータ（フィルター適用）';
+                    } else {
+                        await searchShops();
+                    }
+                } finally {
+                    // ローディング解除
+                    btnResearch.disabled = false;
+                    btnResearch.textContent = '🔄 この条件で再検索';
+                    btnResearch.style.opacity = '1';
+                    btnResearch.style.pointerEvents = 'auto';
+                }
+            });
+        }
+
+        // =====================================================================
+        //  ショップロード（ランダム5店舗）
+        // =====================================================================
+        function loadShops(allShops) {
+            const shuffled = [...allShops].sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, Math.min(5, shuffled.length));
+            picked.forEach(shop => {
+                addChoice(shop.name, 'shop', 5, true, shop);
+            });
+            return picked.length;
+        }
+
+        // =====================================================================
+        //  選択肢管理
+        // =====================================================================
+        function addChoice(name, type, weight, enabled, data) {
+            choices.push({ id: idCounter++, name, type, weight, enabled, data: data || {} });
+        }
+
+        function removeChoice(id) {
+            choices = choices.filter(c => c.id !== id);
+            renderChoicesUI();
+            drawRoulette();
+        }
+
+        function getEnabledChoices() {
+            return choices.filter(c => c.enabled);
+        }
+
+        // =====================================================================
+        //  UI操作制御（ルーレット回転中の操作ブロック）
+        // =====================================================================
+        function updateControlsState(disabled) {
+            // フィルター部と選択肢リストの操作を無効化
+            const filterBody = document.getElementById('filter-body');
+            const choicesList = document.getElementById('choices-list');
+            const customArea = document.getElementById('custom-input').parentElement; // カスタム入力エリア
+
+            if (disabled) {
+                filterBody.classList.add('opacity-50', 'pointer-events-none');
+                choicesList.classList.add('opacity-50', 'pointer-events-none');
+                customArea.classList.add('opacity-50', 'pointer-events-none');
+            } else {
+                filterBody.classList.remove('opacity-50', 'pointer-events-none');
+                choicesList.classList.remove('opacity-50', 'pointer-events-none');
+                customArea.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        }
+
+        // =====================================================================
+        //  UI: 選択肢リスト描画
+        // =====================================================================
+        function renderChoicesUI() {
+            choicesList.innerHTML = '';
+            // 店舗を先、カスタムを後に表示
+            const sorted = [...choices].sort((a, b) => (a.type === 'shop' ? 0 : 1) - (b.type === 'shop' ? 0 : 1));
+            sorted.forEach((c, i) => {
+                const color = PALETTE[i % PALETTE.length];
+                const el = document.createElement('div');
+                el.className = 'flex items-center gap-3 p-3 bg-gray-50 rounded-xl transition hover:bg-gray-100';
+
+                const emoji = c.type === 'shop' ? '🍽️' : (c.data.emoji || '✨');
+                const pct = calcPercent(c);
+
+                el.innerHTML = `
+        <label class="flex items-center gap-2 cursor-pointer flex-shrink-0">
+          <input type="checkbox" data-id="${c.id}" ${c.enabled ? 'checked' : ''}
+                 class="w-5 h-5 rounded accent-primary" />
+          <span class="w-3 h-3 rounded-full flex-shrink-0" style="background:${color}"></span>
+        </label>
+        <div class="flex-1 min-w-0">
+          ${c.type === 'shop' && c.data.url
+                        ? `<a href="${c.data.url}" target="_blank" rel="noopener" class="text-sm font-semibold text-accent truncate block hover:text-orange-600 transition" style="text-decoration:none">${emoji} ${c.name} <span class="text-xs text-gray-400">↗</span></a>`
+                        : `<p class="text-sm font-semibold text-accent truncate">${emoji} ${c.name}</p>`
+                    }
+          <div class="flex items-center gap-2 mt-1">
+            <input type="range" min="1" max="10" value="${c.weight}" data-id="${c.id}"
+                   class="flex-1" style="accent-color:${color}" />
+            <span class="text-xs font-bold w-12 text-right" style="color:${color}">${pct}%</span>
+          </div>
+        </div>
+        ${c.type === 'custom' ? `<button data-remove="${c.id}" class="text-gray-300 hover:text-red-400 text-lg transition ml-1">✕</button>` : ''}
+      `;
+                choicesList.appendChild(el);
+            });
+
+            // イベント
+            choicesList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', e => {
+                    const id = parseInt(e.target.dataset.id);
+                    const c = choices.find(x => x.id === id);
+                    if (c) c.enabled = e.target.checked;
+                    renderChoicesUI();
+                    drawRoulette();
+                });
+            });
+
+            choicesList.querySelectorAll('input[type="range"]').forEach(sl => {
+                sl.addEventListener('input', e => {
+                    const id = parseInt(e.target.dataset.id);
+                    const c = choices.find(x => x.id === id);
+                    if (c) c.weight = parseInt(e.target.value);
+                    // パーセントのみ軽量更新（DOM全再構築しない）
+                    choicesList.querySelectorAll('input[type="range"]').forEach(s => {
+                        const cid = parseInt(s.dataset.id);
+                        const ch = choices.find(x => x.id === cid);
+                        if (ch) {
+                            const pctEl = s.parentElement.querySelector('span');
+                            if (pctEl) pctEl.textContent = calcPercent(ch) + '%';
+                        }
+                    });
+                    requestAnimationFrame(() => drawRoulette());
+                });
+            });
+
+            choicesList.querySelectorAll('[data-remove]').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    removeChoice(parseInt(e.target.dataset.remove));
+                });
+            });
+        }
+
+        function calcPercent(choice) {
+            const enabled = getEnabledChoices();
+            if (!choice.enabled || enabled.length === 0) return 0;
+            const total = enabled.reduce((s, c) => s + c.weight, 0);
+            return Math.round((choice.weight / total) * 100);
+        }
+
+        // =====================================================================
+        //  カスタム選択肢追加
+        // =====================================================================
+        btnAdd.addEventListener('click', () => {
+            const val = customInput.value.trim();
+            if (!val) return;
+            addChoice(val, 'custom', 5, true, { emoji: '🌟' });
+            customInput.value = '';
+            renderChoicesUI();
+            drawRoulette();
+        });
+        customInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') { e.preventDefault(); btnAdd.click(); }
+        });
+
+        // =====================================================================
+        //  Canvas ルーレット描画
+        // =====================================================================
+        let currentRotation = 0;
+
+        function drawRoulette(rotation = currentRotation) {
+            const enabled = getEnabledChoices();
+            ctx.clearRect(0, 0, SIZE, SIZE);
+            const cx = SIZE / 2, cy = SIZE / 2, r = SIZE / 2 - 4;
+
+            if (enabled.length === 0) {
+                ctx.fillStyle = '#E0E0E0';
+                ctx.beginPath();
+                ctx.arc(cx, cy, r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = '#999';
+                ctx.font = '600 14px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('選択肢を追加してください', cx, cy);
+                return;
+            }
+
+            const total = enabled.reduce((s, c) => s + c.weight, 0);
+            let angle = rotation;
+
+            enabled.forEach((c, i) => {
+                const sliceAngle = (c.weight / total) * Math.PI * 2;
+                const color = PALETTE[choices.indexOf(c) % PALETTE.length];
+
+                // セクター
+                ctx.beginPath();
+                ctx.moveTo(cx, cy);
+                ctx.arc(cx, cy, r, angle, angle + sliceAngle);
+                ctx.closePath();
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // ラベル
+                const mid = angle + sliceAngle / 2;
+                const labelR = r * 0.62;
+                const lx = cx + Math.cos(mid) * labelR;
+                const ly = cy + Math.sin(mid) * labelR;
+
+                ctx.save();
+                ctx.translate(lx, ly);
+                ctx.rotate(mid + Math.PI / 2);
+
+                const fontSize = sliceAngle > 0.4 ? 12 : sliceAngle > 0.25 ? 10 : 8;
+                ctx.font = `700 ${fontSize}px Inter, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillStyle = '#fff';
+                ctx.shadowColor = 'rgba(0,0,0,.4)';
+                ctx.shadowBlur = 3;
+
+                // 名前を短縮
+                let label = c.name.length > 8 ? c.name.slice(0, 7) + '…' : c.name;
+                ctx.fillText(label, 0, 0);
+
+                ctx.restore();
+                angle += sliceAngle;
+            });
+
+            // 中心円
+            ctx.beginPath();
+            ctx.arc(cx, cy, 18, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFAB40';
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+            ctx.fillStyle = '#fff';
+            ctx.fill();
+        }
+
+        // =====================================================================
+        //  ルーレット回転アニメーション
+        // =====================================================================
+        btnStart.addEventListener('click', () => {
+            if (spinning) return;
+            const enabled = getEnabledChoices();
+            if (enabled.length === 0) return;
+
+            spinning = true;
+            btnStart.disabled = true;
+            updateControlsState(true); // 操作無効化
+
+            // 重み付き抽選 → 当選インデックス決定
+            const total = enabled.reduce((s, c) => s + c.weight, 0);
+            let rand = Math.random() * total;
+            let winnerIdx = 0;
+            for (let i = 0; i < enabled.length; i++) {
+                rand -= enabled[i].weight;
+                if (rand <= 0) { winnerIdx = i; break; }
+            }
+
+            // 当選セクターの中央角度を計算
+            let cumAngle = 0;
+            for (let i = 0; i < winnerIdx; i++) {
+                cumAngle += (enabled[i].weight / total) * Math.PI * 2;
+            }
+            const winSlice = (enabled[winnerIdx].weight / total) * Math.PI * 2;
+            const winMid = cumAngle + winSlice / 2;
+
+            // 回転計算の修正: 現在の回転角(currentRotation)を考慮して、目標位置と整合するように計算
+            // 目標: finalRotation + winMid = -Math.PI/2 (mod 2π)
+            // つまり finalRotation ≡ -Math.PI/2 - winMid (mod 2π)
+            const baseTarget = -Math.PI / 2 - winMid;
+
+            // 最低回転数文を確保した上で、整合する k を探す
+            const minSpins = 5 + Math.floor(Math.random() * 3); // 5〜7回転
+            const minRotation = currentRotation + minSpins * Math.PI * 2;
+
+            // k は (minRotation - baseTarget) / 2π の繰り上げ
+            const k = Math.ceil((minRotation - baseTarget) / (Math.PI * 2));
+            const finalRotation = baseTarget + k * Math.PI * 2;
+
+            // アニメーション用の差分角度
+            const targetAngle = finalRotation - currentRotation;
+
+            const startTime = performance.now();
+            const duration = 4000 + Math.random() * 1000; // 4〜5秒
+            const startRotation = currentRotation;
+
+            function animate(now) {
+                const elapsed = now - startTime;
+                const t = Math.min(elapsed / duration, 1);
+                // イージング: easeOutCubic → 最後にゆっくり
+                const ease = 1 - Math.pow(1 - t, 3);
+                currentRotation = startRotation + targetAngle * ease;
+
+                drawRoulette(currentRotation);
+
+                if (t < 1) {
+                    requestAnimationFrame(animate);
+                } else {
+                    spinning = false;
+                    btnStart.disabled = false;
+                    updateControlsState(false); // 操作有効化
+                    showResult(enabled[winnerIdx]);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        });
+
+        // =====================================================================
+        //  結果表示
+        // =====================================================================
+        function showResult(winner) {
+            const titleEl = document.getElementById('result-title');
+            const subEl = document.getElementById('result-sub');
+            const imgEl = document.getElementById('result-img');
+            const actionEl = document.getElementById('result-action');
+            const emojiEl = document.getElementById('result-emoji');
+
+            if (winner.type === 'shop') {
+                emojiEl.textContent = '🎉';
+                titleEl.textContent = winner.name;
+                subEl.textContent = winner.data.catch || winner.data.genre || '運命のお店が決まりました！';
+
+                if (winner.data.photo) {
+                    imgEl.src = winner.data.photo;
+                    imgEl.classList.remove('hidden');
+                } else {
+                    imgEl.classList.add('hidden');
+                }
+
+                actionEl.textContent = '🔥 今すぐ予約する（ホットペッパー）';
+                actionEl.href = winner.data.url || 'https://www.hotpepper.jp/';
+                actionEl.classList.remove('hidden');
+
+                // ValueCommerce LinkSwitch 動的リンク更新（もしサポートされていれば）
+                // VCDALが動的にhref変更を検知しない場合の保険
+                setTimeout(() => {
+                    if (typeof VS !== 'undefined' && VS.LinkSwitch && VS.LinkSwitch.update) {
+                        VS.LinkSwitch.update();
+                    }
+                }, 100);
+            } else {
+                const emojis = { 'コンビニ': '🏪', '自炊': '🍳', '断食（食べない）': '🧘' };
+                emojiEl.textContent = emojis[winner.name] || winner.data.emoji || '✨';
+                titleEl.textContent = winner.name;
+
+                const messages = {
+                    'コンビニ': '近くのコンビニへGO！意外な新商品に出会えるかも 🛒',
+                    '自炊': '今日はシェフモード発動！冷蔵庫の中身で奇跡を起こそう 👨‍🍳',
+                    '断食（食べない）': '修行僧モード突入。精神を鍛えるチャンスです 🙏',
+                };
+                subEl.textContent = messages[winner.name] || `「${winner.name}」に決定！運命を受け入れよう 🎲`;
+
+                imgEl.classList.add('hidden');
+
+                if (winner.name === '自炊') {
+                    actionEl.textContent = '📖 レシピを検索（Google）';
+                    actionEl.href = 'https://www.google.com/search?q=簡単+レシピ+今日の晩ごはん';
+                    actionEl.classList.remove('hidden');
+                } else if (winner.name === 'コンビニ') {
+                    actionEl.textContent = '🗺️ 近くのコンビニを探す';
+                    actionEl.href = 'https://www.google.com/maps/search/コンビニ/';
+                    actionEl.classList.remove('hidden');
+                } else if (winner.name === '断食（食べない）') {
+                    actionEl.textContent = '🧘 瞑想BGMを聴く';
+                    actionEl.href = 'https://www.youtube.com/results?search_query=瞑想+BGM';
+                    actionEl.classList.remove('hidden');
+                } else {
+                    actionEl.textContent = `🔍 "${winner.name}" を検索`;
+                    actionEl.href = `https://www.google.com/search?q=${encodeURIComponent(winner.name)}+近く`;
+                    actionEl.classList.remove('hidden');
+                }
+            }
+
+            modal.classList.add('active');
+        }
+
+        // リトライ
+        document.getElementById('btn-retry').addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        // モーダル外タップで閉じる
+        modal.addEventListener('click', e => {
+            if (e.target === modal) modal.classList.remove('active');
+        });
+
+        // =====================================================================
+        //  起動
+        // =====================================================================
+        init();
+
+        // =====================================================================
+        //  初回訪問バナー制御
+        // =====================================================================
+        const guideBanner = document.getElementById('guide-banner');
+        if (guideBanner && !localStorage.getItem('guide_banner_closed')) {
+            // 初回訪問（または閉じたことがない場合）
+            setTimeout(() => {
+                guideBanner.classList.remove('translate-y-full', 'opacity-0');
+            }, 1000); // 1秒遅めに表示
+        }
+
+        function closeGuideBanner() {
+            if (!guideBanner) return;
+            guideBanner.classList.add('translate-y-full', 'opacity-0');
+            localStorage.setItem('guide_banner_closed', 'true');
+        }
+    </script>
+    <!-- ValueCommerce LinkSwitch -->
+    <script type="text/javascript" language="javascript">
+        var vc_pid = "892542011";
+    </script>
+    <script type="text/javascript" src="//aml.valuecommerce.com/vcdal.js" async=""></script>
+
+
+<script>
+    // Service Worker 登録
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js').catch(() => { });
+    }
+</script>
+
+<img crossorigin="anonymous" src="https://a.imgvc.com/i/bf.png?v=1" style="display: none;"><img crossorigin="anonymous" src="https://a.imgvc.com/i/bf.png?v=1" style="display: none;"></body></html>
