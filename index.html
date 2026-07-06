@@ -581,9 +581,7 @@
             <h3 id="result-title" class="text-xl font-extrabold text-accent mb-1"></h3>
             <p id="result-sub" class="text-sm text-gray-500 mb-4"></p>
             <img id="result-img" class="w-full rounded-xl mb-4 hidden" alt="店舗画像" />
-            <a id="result-action" href="#" target="_blank" rel="noopener"
-                class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
-            </a>
+            <div id="result-action-container"></div>
             <br />
             <!-- リトライ（将来的に広告を挟める設計） -->
             <!-- ここに広告スロットを挿入可能 -->
@@ -1468,7 +1466,7 @@
             const titleEl = document.getElementById('result-title');
             const subEl = document.getElementById('result-sub');
             const imgEl = document.getElementById('result-img');
-            const actionEl = document.getElementById('result-action');
+            const actionContainer = document.getElementById('result-action-container');
             const emojiEl = document.getElementById('result-emoji');
 
             if (winner.type === 'shop') {
@@ -1483,17 +1481,13 @@
                     imgEl.classList.add('hidden');
                 }
 
-                actionEl.textContent = '🔥 今すぐ予約する（ホットペッパー）';
-                actionEl.href = winner.data.url || 'https://www.hotpepper.jp/';
-                actionEl.classList.remove('hidden');
-
-                // ValueCommerce LinkSwitch 動的リンク更新（もしサポートされていれば）
-                // VCDALが動的にhref変更を検知しない場合の保険
-                setTimeout(() => {
-                    if (typeof VS !== 'undefined' && VS.LinkSwitch && VS.LinkSwitch.update) {
-                        VS.LinkSwitch.update();
-                    }
-                }, 100);
+                // 毎回 a タグを新しく生成して DOM 挿入することで、LinkSwitch (vcdal.js) に確実に検知させる
+                actionContainer.innerHTML = `
+                    <a id="result-action" href="${winner.data.url || 'https://www.hotpepper.jp/'}" target="_blank" rel="noopener"
+                        class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
+                        🔥 今すぐ予約する（ホットペッパー）
+                    </a>
+                `;
             } else {
                 const emojis = { 'コンビニ': '🏪', '自炊': '🍳', '断食（食べない）': '🧘' };
                 emojiEl.textContent = emojis[winner.name] || winner.data.emoji || '✨';
@@ -1508,23 +1502,29 @@
 
                 imgEl.classList.add('hidden');
 
+                let actionText = '';
+                let actionUrl = '';
+
                 if (winner.name === '自炊') {
-                    actionEl.textContent = '📖 レシピを検索（Google）';
-                    actionEl.href = 'https://www.google.com/search?q=簡単+レシピ+今日の晩ごはん';
-                    actionEl.classList.remove('hidden');
+                    actionText = '📖 レシピを検索（Google）';
+                    actionUrl = 'https://www.google.com/search?q=簡単+レシピ+今日の晩ごはん';
                 } else if (winner.name === 'コンビニ') {
-                    actionEl.textContent = '🗺️ 近くのコンビニを探す';
-                    actionEl.href = 'https://www.google.com/maps/search/コンビニ/';
-                    actionEl.classList.remove('hidden');
+                    actionText = '🗺️ 近くのコンビニを探す';
+                    actionUrl = 'https://www.google.com/maps/search/コンビニ/';
                 } else if (winner.name === '断食（食べない）') {
-                    actionEl.textContent = '🧘 瞑想BGMを聴く';
-                    actionEl.href = 'https://www.youtube.com/results?search_query=瞑想+BGM';
-                    actionEl.classList.remove('hidden');
+                    actionText = '🧘 瞑想BGMを聴く';
+                    actionUrl = 'https://www.youtube.com/results?search_query=瞑想+BGM';
                 } else {
-                    actionEl.textContent = `🔍 "${winner.name}" を検索`;
-                    actionEl.href = `https://www.google.com/search?q=${encodeURIComponent(winner.name)}+近く`;
-                    actionEl.classList.remove('hidden');
+                    actionText = `🔍 "${winner.name}" を検索`;
+                    actionUrl = `https://www.google.com/search?q=${encodeURIComponent(winner.name)}+近く`;
                 }
+
+                actionContainer.innerHTML = `
+                    <a id="result-action" href="${actionUrl}" target="_blank" rel="noopener"
+                        class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
+                        ${actionText}
+                    </a>
+                `;
             }
 
             modal.classList.add('active');
