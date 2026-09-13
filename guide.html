@@ -13,27 +13,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>使い方ガイド | グルキメ！</title>
-    <meta name="description" content="グルキメ！の使い方を解説。位置情報を許可して、ルーレットを回すだけで運命の一食が決まります。" />
+    <meta name="description" content="グルキメ！の使い方を解説。現在地から今日のお店を決める方法と、地図でエリアを指定して明日のお店を絞り込み、予約する流れを紹介します。" />
     <link rel="canonical" href="https://gurukime.com/guide.html" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://gurukime.com/guide.html" />
     <meta property="og:title" content="使い方ガイド｜グルキメ！近くのごはんをルーレットで決める" />
-    <meta property="og:description" content="グルキメ！の使い方を解説。位置情報を許可して、ルーレットを回すだけで運命の一食が決まります。3ステップで今日のランチ・ディナーが即決！" />
+    <meta property="og:description" content="現在地から今日のお店を決める方法と、地図でエリアを指定して明日のお店を絞り込み、予約する流れを紹介します。" />
     <meta property="og:image" content="https://gurukime.com/icons/icon-512.png" />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content="https://gurukime.com/guide.html" />
     <meta property="twitter:title" content="使い方ガイド｜グルキメ！近くのごはんをルーレットで決める" />
-    <meta property="twitter:description" content="グルキメ！の使い方を解説。位置情報を許可して、ルーレットを回すだけで運命の一食が決まります。3ステップで今日のランチ・ディナーが即決！" />
+    <meta property="twitter:description" content="現在地から今日のお店を決める方法と、地図でエリアを指定して明日のお店を絞り込み、予約する流れを紹介します。" />
     <meta property="twitter:image" content="https://gurukime.com/icons/icon-512.png" />
 
     <link rel="manifest" href="/manifest.json" />
     <meta name="theme-color" content="#FFAB40" />
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -145,6 +145,67 @@
             color: #FF8F00;
         }
 
+        .guide-section {
+            margin-top: 2.75rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+        }
+
+        .guide-section-heading {
+            margin-bottom: 1.25rem;
+        }
+
+        .guide-section-heading h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            line-height: 1.5;
+            color: #1a1a2e;
+            margin-bottom: .4rem;
+        }
+
+        .guide-section-heading p {
+            font-size: .9rem;
+            color: #666;
+        }
+
+        .map-step {
+            border: 1px solid #FFE0B2;
+        }
+
+        .map-step .step-number {
+            border-radius: .6rem;
+        }
+
+        .map-guide-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: .5rem;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding: .85rem 1.25rem;
+            background: linear-gradient(135deg, #FFAB40, #FF8F00);
+            color: #fff;
+            font-size: .95rem;
+            font-weight: 700;
+            border-radius: 9999px;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(255, 171, 64, .35);
+            transition: transform .15s, box-shadow .15s;
+        }
+
+        .map-guide-link:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(255, 171, 64, .45);
+        }
+
+        .map-guide-link:focus-visible,
+        .back-link:focus-visible,
+        header a:focus-visible {
+            outline: 3px solid rgba(255, 143, 0, .45);
+            outline-offset: 3px;
+        }
+
         .features {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -212,6 +273,13 @@
         footer a {
             color: #aaa;
         }
+
+        @media (prefers-reduced-motion: reduce) {
+            .map-guide-link,
+            .back-link {
+                transition: none;
+            }
+        }
     </style>
 </head>
 
@@ -222,7 +290,7 @@
         <!-- 地図アイコン (A案) -->
         <a href="/tomorrow2.html"
             class="absolute left-4 top-1/2 transform -translate-y-1/2 p-2 text-gray-400 hover:text-accent transition"
-            aria-label="地図で探す">
+            aria-label="明日のお店を地図で探す">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -246,7 +314,7 @@
 
     <main>
         <h1>📖 使い方ガイド</h1>
-        <p class="lead">グルキメ！はたった3ステップで今日のゴハンが決まります。迷う時間はもう終わり！</p>
+        <p class="lead">グルキメ！なら、今日のゴハンも明日の予定もルーレットで楽しく決められます。</p>
 
         <!-- ステップ1 -->
         <div class="step">
@@ -296,6 +364,55 @@
             <p>結果が表示されたら、そのまま<strong>ホットペッパーで予約</strong>したり、Google検索したりできます。</p>
             <p>納得いかない？「🔄 もう一回まわす」でリトライもOK！</p>
         </div>
+
+        <!-- 明日のお店を地図で予約 -->
+        <section class="guide-section" aria-labelledby="tomorrow-guide-title">
+            <div class="guide-section-heading">
+                <h2 id="tomorrow-guide-title">🗺️ 明日のお店を地図で予約</h2>
+                <p>待ち合わせ場所やお出かけ先を先に決めて、周辺のお店をルーレットで楽しく選べます。</p>
+            </div>
+
+            <div class="step map-step">
+                <span class="emoji">📌</span>
+                <div class="step-number">1</div>
+                <h2>地図で行きたいエリアを指定する</h2>
+                <p>地図を動かして、中央のオレンジ色の印を駅や待ち合わせ場所に合わせます。</p>
+                <p>住所や駅名から探す場合は、地図上の検索欄も使えます。場所が決まったら<strong>「🔎 このエリアで検索」</strong>をタップしてください。</p>
+            </div>
+
+            <div class="step map-step">
+                <span class="emoji">🔍</span>
+                <div class="step-number">2</div>
+                <h2>条件に合う店舗へ絞り込む</h2>
+                <p><strong>「🔍 店舗フィルター」</strong>を開き、ジャンル、距離、ランチ・ディナー、予算などを設定します。</p>
+                <p>条件を変えたら<strong>「🔄 この条件で再検索」</strong>をタップすると、候補のお店が更新されます。</p>
+                <div class="tip">
+                    <strong>💡 ヒント：</strong>明日の予定に合わせて、まず「ランチ」か「ディナー」を選ぶと絞り込みやすくなります。
+                </div>
+            </div>
+
+            <div class="step map-step">
+                <span class="emoji">🎰</span>
+                <div class="step-number">3</div>
+                <h2>ルーレットでお店を決める</h2>
+                <p>候補を確認し、必要なら「選択肢 &amp; 確率設定」で参加するお店や当たりやすさを調整します。</p>
+                <p>準備ができたらオレンジ色の<strong>「START」</strong>を押して、明日のお店を決めましょう。</p>
+            </div>
+
+            <div class="step map-step">
+                <span class="emoji">📅</span>
+                <div class="step-number">4</div>
+                <h2>予約ページで明日の日時を選ぶ</h2>
+                <p>結果画面の<strong>「🔥 今すぐ予約する（ホットペッパー）」</strong>から店舗ページへ進みます。</p>
+                <p>移動先で明日の日付・時間・人数を指定し、空席を確認して予約を完了してください。</p>
+            </div>
+
+            <a href="/tomorrow2.html" class="map-guide-link">
+                <span aria-hidden="true">🗺️</span>
+                地図で明日のお店を決める
+                <span aria-hidden="true">→</span>
+            </a>
+        </section>
 
         <!-- 特徴 -->
         <h2 style="font-size:1.2rem; font-weight:700; color:#1a1a2e; margin-top:2.5rem; margin-bottom:.5rem;">✨ グルキメ！の特徴
