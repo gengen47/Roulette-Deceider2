@@ -117,6 +117,36 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
         }
 
+        .location-gate {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 240px;
+            height: 180px;
+            text-align: center;
+            color: #212121;
+        }
+
+        .location-gate[hidden] { display: none; }
+        .location-gate button {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            width: 100%;
+            min-height: 52px;
+            padding: 10px 18px;
+            border-radius: 28px;
+            background: #FFAB40;
+            color: #fff;
+            font: 700 14px/1.5 Inter, sans-serif;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, .18);
+        }
+        .location-gate button:disabled { opacity: .6; cursor: wait; }
+        .location-gate a { position: absolute; left: 0; right: 0; bottom: 0; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; font-size: 13px; text-decoration: underline; }
+        .location-gate button:focus-visible, .location-gate a:focus-visible { outline: 3px solid #212121; outline-offset: 4px; }
+
         /* 三角のポインター */
         .pointer {
             position: absolute;
@@ -449,14 +479,18 @@
         </section>
 
         <!-- ステータス -->
-        <div id="status-bar" class="w-full max-w-md mb-2 text-center text-sm text-gray-500 fade-in">
-            📍 位置情報を取得しています…
+        <div id="status-bar" role="status" aria-live="polite" class="w-full max-w-md mb-2 text-center text-sm text-gray-500 fade-in">
+            📍 近くのお店を読み込んで、回してみよう
         </div>
 
         <!-- ルーレット -->
         <section id="roulette-container" class="my-4">
             <div class="pointer"></div>
             <canvas id="roulette-canvas" width="300" height="300"></canvas>
+            <div id="location-gate" class="location-gate">
+                <button id="btn-location" type="button">現在地から<br>近くのお店を探す</button>
+                <a id="location-fallback" href="/tomorrow2.html">地図から場所を選ぶ</a>
+            </div>
         </section>
 
         <!-- START ボタン -->
@@ -700,6 +734,10 @@
         let spinning = false;
         let idCounter = 0;
         let lastResultType = null;
+        let locationState = 'idle';
+        let locationBusy = false;
+        let shopsLoading = false;
+        let locationGateViewed = false;
 
         // DOM
         const canvas = document.getElementById('roulette-canvas');
@@ -710,6 +748,60 @@
         const modal = document.getElementById('result-modal');
         const customInput = document.getElementById('custom-input');
         const btnAdd = document.getElementById('btn-add-custom');
+        const locationGate = document.getElementById('location-gate');
+        const btnLocation = document.getElementById('btn-location');
+
+        function syncLocationGate() {
+            const hasChoices = getEnabledChoices().length > 0;
+            locationGate.hidden = hasChoices;
+            btnStart.disabled = spinning || locationBusy || shopsLoading || !hasChoices;
+            btnLocation.disabled = locationBusy || shopsLoading;
+            if (locationBusy || shopsLoading) {
+                btnLocation.textContent = '確認中…';
+            } else if (userLocation) {
+                btnLocation.textContent = 'もう一度お店を探す';
+            } else if (locationState === 'denied' || locationState === 'error') {
+                btnLocation.textContent = '位置情報の取得を再試行';
+            } else {
+                btnLocation.innerHTML = '現在地から<br>近くのお店を探す';
+            }
+            if (!locationGate.hidden && !locationBusy && !shopsLoading && !locationGateViewed) {
+                locationGateViewed = true;
+                trackAnalyticsEvent('location_gate_view');
+            }
+        }
+
+        async function requestLocation(source = 'button') {
+            if (locationBusy || shopsLoading || spinning) return;
+            if (userLocation) {
+                await searchShops('filter');
+                return;
+            }
+            if (source !== 'automatic') trackAnalyticsEvent('location_request_click', { request_source: source });
+            locationBusy = true;
+            syncLocationGate();
+            statusBar.textContent = '📍 位置情報を確認しています…';
+            try {
+                userLocation = await getLocation();
+                locationState = 'ready';
+                trackAnalyticsEvent('location_granted', { request_source: source });
+            } catch (error) {
+                const reason = error?.code === 1 ? 'permission_denied' : error?.code === 3 ? 'timeout' : 'position_unavailable';
+                locationState = reason === 'permission_denied' ? 'denied' : 'error';
+                trackAnalyticsEvent(locationState === 'denied' ? 'location_denied' : 'location_error', { failure_reason: reason });
+                trackAnalyticsEvent('shops_load_failed', { failure_stage: 'geolocation', failure_reason: reason });
+                statusBar.textContent = reason === 'permission_denied' ? '📍 位置情報なしでも、地図から場所を選べます' : '📍 位置情報を取得できませんでした';
+            } finally {
+                locationBusy = false;
+                syncLocationGate();
+            }
+            if (userLocation) await searchShops('initial');
+        }
+
+        btnLocation.addEventListener('click', () => requestLocation());
+        document.getElementById('location-fallback').addEventListener('click', () => {
+            trackAnalyticsEvent('location_fallback_click', { location_state: locationState });
+        });
 
         // HiDPI
         const dpr = window.devicePixelRatio || 1;
@@ -727,22 +819,9 @@
             // フィルターUIを初期化
             initFilterUI();
 
-            try {
-                if (IS_DEBUG) {
-                    statusBar.textContent = '🛠️ デバッグモード（モックデータ使用）';
-                    loadShops(MOCK_SHOPS);
-                } else {
-                    statusBar.textContent = '📍 位置情報を取得しています…';
-                    const pos = await getLocation();
-                    userLocation = pos;
-                    await searchShops('initial');
-                }
-            } catch (e) {
-                console.error(e);
-                trackAnalyticsEvent('shops_load_failed', {
-                    failure_stage: 'geolocation',
-                });
-                statusBar.textContent = '⚠️ 位置情報の取得に失敗しました。ブラウザの位置情報を許可してリロードしてください。';
+            if (IS_DEBUG) {
+                statusBar.textContent = '🛠️ デバッグモード（モックデータ使用）';
+                loadShops(MOCK_SHOPS);
             }
 
             // デフォルトカスタム選択肢
@@ -752,11 +831,21 @@
 
             renderChoicesUI();
             drawRoulette();
-            btnStart.disabled = false;
+            // 許可状態を確認できないブラウザでも、初回の要求は必ずユーザー操作を待つ。
+            if (!IS_DEBUG && navigator.permissions?.query) {
+                try {
+                    const permission = await navigator.permissions.query({ name: 'geolocation' });
+                    if (permission.state === 'granted') await requestLocation('automatic');
+                } catch {
+                    // Permissions API非対応の場合は円中央のボタンから利用する。
+                }
+            }
         }
 
         // 店舗検索（フィルター適用）
         async function searchShops(searchSource = 'initial') {
+            shopsLoading = true;
+            syncLocationGate();
             statusBar.textContent = '周辺の飲食店を検索中…';
             btnStart.disabled = true;
 
@@ -891,7 +980,8 @@
                 });
                 statusBar.textContent = '⚠️ 店舗の検索に失敗しました。条件を変えて再検索してください。';
             }
-            btnStart.disabled = false;
+            shopsLoading = false;
+            drawRoulette();
         }
 
         // =====================================================================
@@ -1170,7 +1260,7 @@
             // 再検索ボタン
             btnResearch.addEventListener('click', async () => {
                 if (!userLocation && !IS_DEBUG) {
-                    statusBar.textContent = '⚠️ 位置情報が未取得です。';
+                    await requestLocation('filter');
                     return;
                 }
 
@@ -1362,6 +1452,7 @@
 
         function drawRoulette(rotation = currentRotation) {
             const enabled = getEnabledChoices();
+            syncLocationGate();
             ctx.clearRect(0, 0, SIZE, SIZE);
             const cx = SIZE / 2, cy = SIZE / 2, r = SIZE / 2 - 4;
 
@@ -1374,7 +1465,6 @@
                 ctx.font = '600 14px Inter, sans-serif';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('選択肢を追加してください', cx, cy);
                 return;
             }
 
@@ -1625,7 +1715,7 @@
         if (guideBanner && !localStorage.getItem('guide_banner_closed')) {
             // 初回訪問（または閉じたことがない場合）
             setTimeout(() => {
-                guideBanner.classList.remove('translate-y-full', 'opacity-0');
+                if (locationGate.hidden) guideBanner.classList.remove('translate-y-full', 'opacity-0');
             }, 1000); // 1秒遅めに表示
         }
 
