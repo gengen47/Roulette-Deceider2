@@ -602,6 +602,25 @@
         // ★本番時はここにAPIキーを設定
         const HP_API_KEY = 'f008a1b21c675ccc';
 
+        // GA4へ送るのは改善に必要な匿名の操作情報だけに限定する。
+        // 位置情報、店舗名、カスタム入力などユーザー由来の値は送信しない。
+        function trackAnalyticsEvent(eventName, parameters = {}) {
+            if (IS_DEBUG || typeof window.gtag !== 'function') return;
+            window.gtag('event', eventName, parameters);
+        }
+
+        function getTimeMode() {
+            return document.querySelector('input[name="time-mode"]:checked')?.value || 'unknown';
+        }
+
+        function getShopCountBucket(count) {
+            if (count === 0) return '0';
+            if (count <= 5) return '1-5';
+            if (count <= 20) return '6-20';
+            if (count <= 50) return '21-50';
+            return '51-100';
+        }
+
         // =====================================================================
         //  モックデータ
         // =====================================================================
@@ -680,6 +699,7 @@
         let choices = [];   // { id, name, type:'shop'|'custom', weight, enabled, data? }
         let spinning = false;
         let idCounter = 0;
+        let lastResultType = null;
 
         // DOM
         const canvas = document.getElementById('roulette-canvas');
@@ -715,10 +735,13 @@
                     statusBar.textContent = '📍 位置情報を取得しています…';
                     const pos = await getLocation();
                     userLocation = pos;
-                    await searchShops();
+                    await searchShops('initial');
                 }
             } catch (e) {
                 console.error(e);
+                trackAnalyticsEvent('shops_load_failed', {
+                    failure_stage: 'geolocation',
+                });
                 statusBar.textContent = '⚠️ 位置情報の取得に失敗しました。ブラウザの位置情報を許可してリロードしてください。';
             }
 
@@ -733,7 +756,7 @@
         }
 
         // 店舗検索（フィルター適用）
-        async function searchShops() {
+        async function searchShops(searchSource = 'initial') {
             statusBar.textContent = '周辺の飲食店を検索中…';
             btnStart.disabled = true;
 
@@ -853,8 +876,19 @@
                 renderChoicesUI();
                 drawRoulette();
                 statusBar.textContent = `📍 周辺 ${shops.length} 店舗からランダム${pickCount}店舗を選出`;
+                trackAnalyticsEvent('shops_loaded', {
+                    search_source: searchSource,
+                    time_mode: isLunchMode ? 'lunch' : 'dinner',
+                    shop_count_bucket: getShopCountBucket(shops.length),
+                    selected_shop_count: pickCount,
+                });
             } catch (e) {
                 console.error(e);
+                trackAnalyticsEvent('shops_load_failed', {
+                    failure_stage: 'shop_search',
+                    search_source: searchSource,
+                    time_mode: isLunchMode ? 'lunch' : 'dinner',
+                });
                 statusBar.textContent = '⚠️ 店舗の検索に失敗しました。条件を変えて再検索してください。';
             }
             btnStart.disabled = false;
@@ -1140,6 +1174,15 @@
                     return;
                 }
 
+                trackAnalyticsEvent('filter_applied', {
+                    time_mode: getTimeMode(),
+                    distance_range: document.getElementById('distance-range').value,
+                    budget_min_set: document.getElementById('budget-min').value ? 'yes' : 'no',
+                    budget_max_set: document.getElementById('budget-max').value ? 'yes' : 'no',
+                    open_now: document.getElementById('filter-open-now').checked ? 'yes' : 'no',
+                    excluded_genre_count: excludedGenres.size,
+                });
+
                 // ローディング状態に切り替え
                 btnResearch.disabled = true;
                 btnResearch.textContent = '⏳ 検索中…';
@@ -1156,7 +1199,7 @@
                         drawRoulette();
                         statusBar.textContent = '🛠️ モックデータ（フィルター適用）';
                     } else {
-                        await searchShops();
+                        await searchShops('filter');
                     }
                 } finally {
                     // ローディング解除
@@ -1398,6 +1441,13 @@
             const enabled = getEnabledChoices();
             if (enabled.length === 0) return;
 
+            trackAnalyticsEvent('roulette_start', {
+                time_mode: getTimeMode(),
+                enabled_choice_count: enabled.length,
+                shop_choice_count: enabled.filter(choice => choice.type === 'shop').length,
+                custom_choice_count: enabled.filter(choice => choice.type === 'custom').length,
+            });
+
             spinning = true;
             btnStart.disabled = true;
             updateControlsState(true); // 操作無効化
@@ -1470,6 +1520,7 @@
             const imgEl = document.getElementById('result-img');
             const actionContainer = document.getElementById('result-action-container');
             const emojiEl = document.getElementById('result-emoji');
+            lastResultType = winner.type === 'shop' ? 'shop' : 'custom';
 
             if (winner.type === 'shop') {
                 emojiEl.textContent = '🎉';
@@ -1485,7 +1536,7 @@
 
                 // 毎回 a タグを新しく生成して DOM 挿入することで、LinkSwitch (vcdal.js) に確実に検知させる
                 actionContainer.innerHTML = `
-                    <a id="result-action" href="${winner.data.url || 'https://www.hotpepper.jp/'}" target="_blank" rel="noopener"
+                    <a id="result-action" data-action-type="shop_booking" href="${winner.data.url || 'https://www.hotpepper.jp/'}" target="_blank" rel="noopener"
                         class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
                         🔥 今すぐ予約する（ホットペッパー）
                     </a>
@@ -1506,23 +1557,27 @@
 
                 let actionText = '';
                 let actionUrl = '';
+                let actionType = 'custom_search';
 
                 if (winner.name === '自炊') {
                     actionText = '📖 レシピを検索（Google）';
                     actionUrl = 'https://www.google.com/search?q=簡単+レシピ+今日の晩ごはん';
+                    actionType = 'recipe_search';
                 } else if (winner.name === 'コンビニ') {
                     actionText = '🗺️ 近くのコンビニを探す';
                     actionUrl = 'https://www.google.com/maps/search/コンビニ/';
+                    actionType = 'convenience_map';
                 } else if (winner.name === '断食（食べない）') {
                     actionText = '🧘 瞑想BGMを聴く';
                     actionUrl = 'https://www.youtube.com/results?search_query=瞑想+BGM';
+                    actionType = 'meditation';
                 } else {
                     actionText = `🔍 "${winner.name}" を検索`;
                     actionUrl = `https://www.google.com/search?q=${encodeURIComponent(winner.name)}+近く`;
                 }
 
                 actionContainer.innerHTML = `
-                    <a id="result-action" href="${actionUrl}" target="_blank" rel="noopener"
+                    <a id="result-action" data-action-type="${actionType}" href="${actionUrl}" target="_blank" rel="noopener"
                         class="inline-block bg-primary text-white font-bold px-6 py-3 rounded-full shadow-lg text-sm mb-3 hover:shadow-xl transition">
                         ${actionText}
                     </a>
@@ -1530,10 +1585,26 @@
             }
 
             modal.classList.add('active');
+            trackAnalyticsEvent('roulette_result', {
+                result_type: lastResultType,
+                time_mode: getTimeMode(),
+            });
         }
+
+        document.getElementById('result-action-container').addEventListener('click', event => {
+            const action = event.target.closest('#result-action');
+            if (!action) return;
+            trackAnalyticsEvent('result_action_click', {
+                action_type: action.dataset.actionType || 'unknown',
+                result_type: lastResultType || 'unknown',
+            });
+        });
 
         // リトライ
         document.getElementById('btn-retry').addEventListener('click', () => {
+            trackAnalyticsEvent('roulette_retry', {
+                previous_result_type: lastResultType || 'unknown',
+            });
             modal.classList.remove('active');
         });
 
